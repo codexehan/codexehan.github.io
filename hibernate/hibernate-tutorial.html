@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="Hibernate tutorial">
+	<meta name="keywords" content="Hibernate, introduction">
+	<meta name="viewport" content="width=device-width">
+    <title>Hibernate Tutorial</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Hibernate Introduction</strong></a>
+            <ul class="section-list">
+              <li class="section active">
+                <a href="hibernate-tutorial.html">Hibernate Tutorial</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Hibernate JBoss Tool</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="install-hibernate-jboss-tool.html">Install Hibernate JBoss tool</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-configuration-file.html">Generate hibernate.cfg.xml file</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-mapping-file.html">Generate hibernate mapping file</a>
+              </li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate Exceptions</strong></a>
+            <ul class="section-list">
+            	<li class="section ">
+					<a href="hibernate-exceptions.html">Hibernate Exceptions</a>
+				</li>
+            <li class="section ">
+					<a href="communication-link-failure.html">Communication Link Failure</a>
+				</li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate APIs</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-get-load.html">Get vs Load</a>
+				</li>            	
+				<li class="section ">
+					<a href="hibernate-opensession-getcurrentsession.html">openSession vs getCurrentSession</a>
+				</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Hiberate Tutorial</h1>
+            </div>
+            <div id="article-content">
+			 <p><strong>1 What is Hibernate?</strong></p>
+			 <p>Hibernate is a Java based Object-relational mapping(ORM) tool which is used to map domain model to the database tables</p>
+			 <p><strong>2 How to learn Hibernate?</strong></p>
+			 <p>To learn how to use Hibernate, you can spend tow or three hours on reading this <a href="https://www.tutorialspoint.com/hibernate/index.htm">Hibernate tutorial</a>. The following contents are summarized by myself according to my learning experience. Some contents are not covered in the tutorial.</p>
+			 <p><strong>3 Hibernte configuration file</strong></p>
+			 <p>This is an example of Java and MySQL. In the hibernate.cfg.xml file, set the value of hibernate dialect to org.hibernate.dialect.MySQLDialect. The hiernate connection driver id com.mysql.jdbc.Driver. The hibernate commeciton url, username and password should keep same with infomation in the database. The hibernte.cfg.xml file is shown as below:</p>
+			 <pre class="java-code"><code class="xml">
+&lt;?xml version = "1.0" encoding = "utf-8"?&gt; 
+&lt;!DOCTYPE hibernate-configuration SYSTEM "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd"&gt; 
+&lt;hibernate-configuration&gt;
+ &lt;session-factory&gt; 
+ &lt;property name = "hibernate.dialect"&gt; org.hibernate.dialect.MySQLDialect 
+ &lt;/property&gt; 
+ &lt;property name = "hibernate.connection.driver_class"&gt; com.mysql.jdbc.Driver &lt;/property&gt;
+ &lt;!-- Assume test is the database name --&gt;
+ &lt;property name = "hibernate.connection.url"&gt; jdbc:mysql://localhost/test
+ &lt;/property&gt; 
+ &lt;property name = "hibernate.connection.username"&gt; root 
+ &lt;/property&gt; 
+ &lt;property name = "hibernate.connection.password"&gt; root123 
+ &lt;/property&gt; 
+ &lt;/session-factory&gt; 
+&lt;/hibernate-configuration&gt;
+			 </code></pre>
+			 <p><strong>4 Bind domain model and database table</strong></p>
+			 <p>After creating the configuration file, we can user <a href="https://www.tutorialspoint.com/hibernate/hibernate_annotations.htm">annotation</a> and <a href="https://www.tutorialspoint.com/hibernate/hibernate_mapping_files.htm">xml file</a> to bnd the domain model and database table.</p>
+			 <p><strong>5 Create session factory</strong></p>
+			 <p>After completing two steps above, let's see how to use Hibernate in the code.</p>
+			 <p>Firstly, we need to create a session factory to manager all <a href="https://www.tutorialspoint.com/hibernate/hibernate_sessions.htm">sessions</a>. Generally, we just keep one factory for one database in our applicaiton. Thus, we use a sigleton to create session factory.</p>
+			 <pre class="java-code"><code>
+public enum HibernateUtil {
+	INSTANCE;
+	private SessionFactory factory = null;
+	private HibernateUtil() {
+		Configuration configuration = new Configuration().configure();
+		configuration.addAnnotatedClass(Domain model.class);
+		
+		StandardServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+		factory = configuration.buildSessionFactory(registry);
+	}
+	public SessionFactory getSessionFactory() {
+		return this.factory;
+	}
+}
+			 </code></pre>
+			 <p>In the code above, if you use annotation to map domain class, you can call <code>configuration.addAnnotatedClass()</code> to load the resource. If you use xml file, you can call <code>configuration.addResource("Domain Model.hbm.xml")</code>.</p> 
+			 <p><strong>6 Manipulate database in Java code</strong></p>
+			 <p>
+			 	Use the following code template to interact with database:
+			 </p>
+			 <pre class="java-code"><code>
+SessionFactory factory =  HibernateUtil.INSTANCE.getSessionFactory();
+Transaction transaction = null;
+Session session = factory.openSession();
+try {
+	transaction = session.beginTransaction();
+
+	//Manipulation, update,insert...
+
+	transaction.commit();
+}catch(HibernateException e) {
+	if(transaction != null) transaction.rollback();
+	e.printStackTrace();
+}finally {
+	session.close();
+}
+			 </code></pre>
+			 <p><strong>7 Three Hibernate Query Languages</strong></p>
+			 <p>Hibernate has three methods to manipulate database which are <a href="https://www.tutorialspoint.com/hibernate/hibernate_query_language.htm">Hibernate Query Language</a> (HQL), <a href="https://www.tutorialspoint.com/hibernate/hibernate_criteria_queries.htm">Criteria Queries</a>, and <a href="https://www.tutorialspoint.com/hibernate/hibernate_native_sql.htm">Native SQL</a>. I prefer to use HQL and criteria.</p>
+			 <p><strong>HQL</strong></p>
+			 <p>We use an example of getting a record in the database by primary key to show the code template used in implementation.</p>
+			 <pre class="java-code"><code>
+public List&lt;System&gt; getAllSystemsByVersionId(Integer VersionId){
+	Session session = factory.openSession();
+	Transaction transaction = null;
+	List&lt;Activitycompatibility&gt; list = new ArrayList&lt;Activitycompatibility&gt;();
+	try {
+		transaction = session.beginTransaction();
+		String hql = "FROM SystemS WHERE S.versionId = :versionId";
+		Query query = session.createQuery(hql);
+		query.setParameter("versionId", VersionId);
+		list = query.list();
+		transaction.commit();
+	}catch(HibernateException e) {
+		if(transaction != null) transaction.rollback();
+		e.printStackTrace();
+	}finally {
+		session.close();
+	}
+	return list;
+}
+			 </code></pre>
+			 <p><strong>Criteria</strong></p>
+			 <p>There are some questions we often meet in the implementation.</p>
+			 <p><strong>    Hibernate criteria and or combination</strong></p>
+			 <pre class="java-code"><code>
+Criteria criteria = getSession().createCriteria(Domain Model.class); 
+Criterion cn1= Restrictions.and(Restrictions.eq("A", "1"),Restrictions.eq("B", 1);
+Criterion cn2= Restrictions.and(Restrictions.eq("C", "1"),Restrictions.eq("D", 1);
+criteria.add(Restrictions.or(cn1, cn2));
+			 </code></pre>
+			 <p><strong>    Hibernate criteria count avg max etc</strong></p>
+			 <pre class="java-code"><code>
+Criteria cr = session.createCriteria(persistentClass);
+
+//add other restrictions	
+
+//count				
+ cr.setProjection(Projections.rowCount()).uniqueResult();
+			 </code></pre>
+			 <div id="tip">
+				<p>Tips:</p>
+				<p>Create hibernate.cfg.xml and domain model mapping files by manual will waste too much time. I recommend to use Hibernate JBoss Tool incroduced in next chapter. </p>
+			 </div>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <a href="install-hibernate-jboss-tool.html" class="navigation navigator-next" title="install hibernate jboss tool">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script> 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="java send email">
+	<meta name="keywords" content="java send email">
+	<meta name="viewport" content="width=device-width">
+    <title>Java Send Email</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  <style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title" style="opacity:1;">
+              <h1>Java Send Email</h1>
+            </div>
+            <div id="article-content">
+            <p>There is <a href="https://www.javatpoint.com/example-of-sending-email-using-java-mail-api">multiple methods</a> to send email:</p>
+            	<ol>
+				  <li>Install and use any SMTP server such as Postcast server, Apache James server, cmail server etc. (or)</li>
+				  <li>Use the SMTP server provided by the host provider e.g. my SMTP server is mail.javatpoint.com (or)</li>
+				  <li>Use the SMTP Server provided by other companies e.g. gmail etc.</li>
+				</ol>
+            	<p>The following code implements the third method which can be used to send both <strong>text</strong> and <strong>html</strong> email.</p>
+            	<p>MailUtil - Set basic info of email</p>
+           	<pre class="java-code"><code>
+public class MailUtil {
+	public static final int HTML_FORMAT = 1;
+	public static final int TEXT_FORMAT = 2;
+	public static final String PASSWORD = "set email password";
+	public static final String root = "http://localhost:8080";
+	/***************Sign up email******************/
+	public static final String ACCOUNT_ACTIVATION_SENDER = "youremail@gmail.com";
+	public static final String ACCOUNT_ACTIVATION_SUBJECT = "subject";
+	public static String generateAccountActivationEmail(String hashCode, String rootURL) {
+		String content = "&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;Thanks you for your registration. Please activate your account in 24 hours.&lt;a href='"
+				+ rootURL+"/signup/confirm?code=" + hashCode+"'&gt;"+rootURL+"/signup/confirm?code=" + hashCode
+                + "&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;";
+		return content;
+	}
+}
+           	</code></pre>
+           	<p>MailDispatcher - Send email</p>
+           	<pre class="java-code"><code>
+public class MailDispatcher implements Runnable {
+	private String receiver;
+	private String sender = "youremail@gmail.com";//default
+	private String password = "youremailpassword";//default
+	
+	//email details
+	private String subject;
+	private String content;
+	private int contentType;
+	
+	public MailDispatcher(String sender, String password, String receiver, String subject, String content,int contentType) {
+		this.sender = sender;
+		this.password = password;
+		this.receiver = receiver;
+		this.subject = subject;
+		this.content = content;
+		this.contentType = contentType;
+	}
+	/**
+	 * If you want to use fixed sender and password, just set the default value of sender and password in this class. 
+	 * For exmaple, private String sender = "codexe.net@gmail.com"; private String password = "********";
+	 * Then call this method to set other info.
+	 * @param receiver
+	 * @param subject
+	 * @param content
+	 * @param contentType
+	 */
+	public MailDispatcher(String receiver, String subject, String content,int contentType) {
+		this.receiver = receiver;
+		this.subject = subject;
+		this.content = content;
+		this.contentType = contentType;
+	}
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+	//	String from = "codexe.net@gmail.com";
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+		//get session
+		Session session = Session.getDefaultInstance(props, new Authenticator(){
+			protected PasswordAuthentication getPasswordAuthentication() {    
+				return new PasswordAuthentication(sender,password);  
+			}   
+		});
+		//compose message
+		try {
+			MimeMessage message = new MimeMessage(session);
+			//Set sender's name
+			message.setFrom(new InternetAddress(MailUtil.TEST_USER,"SGBING"));
+			//Set reveiver
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(this.receiver));
+			//Set subject
+			message.setSubject(subject);
+			
+			//Set email content. The format can be  html or text only.
+			if(contentType == MailUtil.HTML_FORMAT) {
+				message.setContent(content, "text/html;charset=UTF-8");
+			}
+			else if(contentType == MailUtil.TEXT_FORMAT){
+				message.setText(content);
+			}
+            // 3.Send email
+            Transport.send(message);
+		}catch(MessagingException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public String getSender() {
+		return sender;
+	}
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content, int type) {
+		this.content = content;
+		this.contentType = type;
+	}
+
+}
+           	</code></pre>
+           	<p>Call mail dispatcher in your code</p>
+           	<pre class="java-code"><code>
+		/************************Send email*****************************/
+	//get the host url especially after you publish your web application
+	String rootURL = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+	//String rootURL = request.getContextPath();getRequestURI().replace("/signup", "");
+	Thread confirmThread = new Thread(new MailDispatcher(MailUtil.ACCOUNT_ACTIVATION_SENDER,MailUtil.PASSWORD,email,
+			MailUtil.ACCOUNT_ACTIVATION_SUBJECT,MailUtil.generateAccountActivationEmail(hashCode, rootURL), MailUtil.HTML_FORMAT));
+	confirmThread.start();
+           	</code></pre>
+           	<div id="tip">
+           		<p>Resolving AuthenticationFailedException</p>
+           		<p>
+				Click on this link and click on turn on radio button to allow users to send mail from unknown location. <a href="https://www.google.com/settings/security/lesssecureapps">https://www.google.com/settings/security/lesssecureapps</a>
+          		</p>
+           	</div>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <!--<a href="d3-bar-chart-scale.html" class="navigation navigator-next" title="d3 scale bar chart">&#10095;</a>  -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+  </body>
+</html>

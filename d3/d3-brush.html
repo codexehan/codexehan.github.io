@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Brush">
+	<meta name="keywords" content="D3 Brush">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Brush</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+		.area {
+		  fill: steelblue;
+		}
+		.arc text {
+		  font: 10px sans-serif;
+		  text-anchor: middle;/*align text in SVG to middle*/
+		}
+/*		#diagram{
+			position:relative;
+			width:410px;
+			height:230px;
+			margin:auto;
+		}*/
+/*		.tooltip{
+		background: #eee; 
+        box-shadow: 0 0 5px #999999;                                    
+        color: #333;                                                    
+        display: none;                                                  
+        font-size: 12px;                                                
+        left: 160px;                                                  
+        padding: 10px;                                                  
+        position: absolute;                                             
+        text-align: center;                                             
+        top: 80px;                                                      
+        width: 100px;                                                    
+        z-index: 10; 
+		}*/
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Brush</h1>
+            </div>
+            <div id="article-content">
+           	  <div id="diagram"></div>
+           	  <div id="tip">
+           	  	<p>Technical points:</p>
+           	  	<p>Brush must be added in a group</p>
+				<p>		
+				d3 event is brush event when the brush event listener is called.
+				<ol>
+					<li>target - the associated brush behavior.</li>
+					<li>type - the string “start”, “brush” or “end”; see brush.on.</li>
+					<li>selection - the current brush selection.</li>
+					<li>sourceEvent - the underlying input event, such as mousemove or touchmove.</li>
+				</ol>
+				</p>
+          	  	<p>
+          	  	Only define brushX(), the height of selection will be fixed to "height". The d3.event.selection will only return [x0,x1].
+          	  	After seting brush(), the d3.event.selection will only return [[x0,y0],[x1,y1]]
+          	  		<pre class="java-code"><code>
+var brush = d3.brushX()
+	.extent([[0,0],[width,height]])//(x0,y0)  (x1,y1)
+	.on("end",brushend);//when mouse up, move the selection to the exact tick //start(mouse down), brush(mouse move), end(mouse up)
+          	  		</code></pre>
+          	  	</p>
+           	  </div>
+              <pre class="java-code"><code>
+              	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    		var width = 500 - margin.left - margin.right;
+		var height = 300 - margin.top - margin.bottom;
+		
+		var svg = d3.select("#diagram").append("svg")
+					.attr("width", width+margin.left+margin.right)
+					.attr("height", height+margin.top+margin.bottom)
+					.append("g")
+					.attr("transform","translate("+margin.left+","+margin.right+")");
+		var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+		
+		//add x axis
+		var xScale = d3.scaleLinear().range([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);
+		svg.append("g")
+			.attr("transform","translate(0,"+height+")")
+			.call(d3.axisBottom(xScale));
+		
+		var brush = d3.brushX()
+					.extent([[0,0],[width,height]])//(x0,y0)  (x1,y1)
+					.on("end",brushend);//when mouse up, move the selection to the exact tick //start(mouse down), brush(mouse move), end(mouse up)
+		svg.append("g")
+			.attr("class","brush")
+			.call(brush);
+		
+		function brushend(){
+			if (!d3.event.sourceEvent) return; // Only transition after input.
+  			if (!d3.event.selection) return; // Ignore empty selections.
+			console.log(d3.event.selection);
+			var areaArray = d3.event.selection;//[x0,x1]
+			
+		}
+              </code></pre>
+           	  
+            	
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    <script>
+		var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    	var width = 500 - margin.left - margin.right;
+		var height = 300 - margin.top - margin.bottom;
+		
+		var svg = d3.select("#diagram").append("svg")
+					.attr("width", width+margin.left+margin.right)
+					.attr("height", height+margin.top+margin.bottom)
+					.append("g")
+					.attr("transform","translate("+margin.left+","+margin.right+")");
+		var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+		
+		//add x axis
+		var xScale = d3.scaleLinear().range([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);
+		svg.append("g")
+			.attr("transform","translate(0,"+height+")")
+			.call(d3.axisBottom(xScale));
+		
+		var brush = d3.brushX()
+					.extent([[0,0],[width,height]])//(x0,y0)  (x1,y1)
+					.on("end",brushend);//when mouse up, move the selection to the exact tick //start(mouse down), brush(mouse move), end(mouse up)
+
+		svg.append("g")
+			.attr("class","brush")
+			.call(brush)
+			.call(brush.move,xScale.range());//set initial brush area which is gray area.
+		
+		function brushend(){
+			if (!d3.event.sourceEvent) return; // Only transition after input.
+  			if (!d3.event.selection) return; // Ignore empty selections.
+			console.log(d3.event.selection);
+			var areaArray = d3.event.selection;//[x0,x1]
+			
+		}
+
+	</script>
+  </body>
+</html>

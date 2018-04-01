@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="Generate hibernate.cfg.xml file">
+	<meta name="keywords" content="Jboss tool, hiberneate configurtion">
+	<meta name="viewport" content="width=device-width">
+    <title>Generate hibernate.cfg.xml file</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Hibernate Introduction</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="hibernate-tutorial.html">Hibernate Tutorial</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Hibernate JBoss Tool</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="install-hibernate-jboss-tool.html">Install Hibernate JBoss tool</a>
+              </li>
+			  <li class="section active">
+                <a href="generate-hibernate-configuration-file.html">Generate hibernate.cfg.xml file</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-mapping-file.html">Generate hibernate mapping file</a>
+              </li>
+            </ul>
+          </li>
+          <li class="chapter">
+            <a><strong>Hibernate Exceptions</strong></a>
+            <ul class="section-list">
+            	<li class="section ">
+					<a href="hibernate-exceptions.html">Hibernate Exceptions</a>
+				</li>
+            <li class="section ">
+					<a href="communication-link-failure.html">Communication Link Failure</a>
+				</li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate APIs</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-get-load.html">Get vs Load</a>
+				</li>            	
+				<li class="section ">
+					<a href="hibernate-opensession-getcurrentsession.html">openSession vs getCurrentSession</a>
+				</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Generate hibernate.cfg.xml File</h1>
+            </div>
+            <div id="article-content">
+			 <p>
+			 	1. Open Hibernate perspsctive in Eclipse
+			 </p>
+			 <img src="images/hibernate-eclipse-perspective.png" alt="hibernate eclipse perspective">
+			 <p>
+			 	2. Right the "Hibernate Configurations" navigator in the right side and select "Add Configuration..." action
+			 </p>
+			 <p>
+			 	3. Select the Project and Database conneciton. And set the directory of Configuration file
+			 </p>
+			 <img src="images/hibernate-jboss-configuration.png" alt="hibernate jboss configuration">
+			 <p>4. The contents in the hibernate.cfg.xml file</p>
+			  <img src="images/hibernate.cfg.xml.png" alt="hibernate.cfg.xml">
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="install-hibernate-jboss-tool.html" class="navigation navigator-pre" title="install hibernate jboss tool">&#10094;</a>
+          <a href="generate-hibernate-mapping-file.html" class="navigation navigator-next" title="generate hibernate mapping file">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

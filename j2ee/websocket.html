@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script> 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="java WebSocket">
+	<meta name="keywords" content="java WebSocket">
+	<meta name="viewport" content="width=device-width">
+    <title>WebSocket</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  <style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title" style="opacity:1;">
+              <h1>WebSocket</h1>
+            </div>
+            <div id="article-content">
+            	<p>I will use an example which is to get the comments update in real time to explain the process.</p>
+           	  <p><strong>1. Create a WebSocket endpoint.</strong> This is the port that client can make communications with server.</p>
+           	  <pre class="java-code"><code>
+@ApplicationScoped
+@ServerEndpoint(value="/realtime/comments/{userid}")
+public class RealTimeCommentWebSocketServer {
+	private RealTimeCommentSessionHandler sessionHandler = new RealTimeCommentSessionHandler();
+	private Gson gson = new Gson();
+	@OnOpen
+	public void open(Session session,@PathParam("userid") String userid) {
+		int userId = Integer.valueOf(userid);
+		sessionHandler.addSession(userId, session);
+		//When user open the connect, we generally return the initial status of comment updates
+		sessionHandler.sendToSession(userId,false);
+	}
+	@OnClose
+	public void close(Session session) {
+		sessionHandler.removeSession(session);
+	}
+	@OnError
+	public void onError(Throwable error) {
+		error.printStackTrace();
+	}
+	@OnMessage
+	public void handleMessage(String message, Session session) {
+		//get the message from client here
+	}
+	
+}
+            	</code></pre>
+            	<p><strong>2. Create session handler</strong> to control the actual communication</p>
+            	<pre class="java-code"><code>
+@ApplicationScoped
+public class RealTimeCommentSessionHandler {
+	//hashtable is synchronized
+	//user id + session list. one use account may login different client. easy to update to all "same users"
+	private static Hashtable&lt;Integer, List&lt;Session&gt;&gt; userSession = new Hashtable&lt;Integer,List&lt;Session&gt;&gt;();
+	//session + user id
+	private static Hashtable&lt;Session, Integer&gt; sessionUser = new Hashtable&lt;Session, Integer&gt;();
+	
+	public synchronized void addSession(Integer userId, Session session) {
+	//update two hash tables
+		sessionUser.put(session, userId);
+		List&lt;Session&gt; list = userSession.getOrDefault(userId, new LinkedList&lt;Session&gt;());
+		list.add(session);
+		userSession.put(userId, list);
+	}
+	public synchronized void removeSession(Session session) {
+	//remove from both hash tables
+		int userId  =sessionUser.get(session);
+		sessionUser.remove(session);
+		
+		List&lt;Session&gt; list = userSession.getOrDefault(userId, new LinkedList&lt;Session&gt;());
+		list.remove(session);
+		userSession.put(userId, list);
+	}
+	public synchronized static void sendToAllSessions(List&lt;Integer&gt; userIds, boolean isOnline) {
+		//get update from DB and send to all realted users.
+		//once user read the unread comments, they will be deleted from DB. This should be another topic...
+		OfferCommentUpdateManager commentUpdateManager = new OfferCommentUpdateManager();
+		for(int userId : userIds) {
+			Long res = isOnline?commentUpdateManager.getUnreadOfferCommentNum(userId):commentUpdateManager.getUnreadOfferCommentNumWS(userId);
+			List&lt;Session&gt; sessions = userSession.get(userId);
+			if(sessions!=null) {
+				for(Session session : sessions) {
+					if(session !=null) {
+						try {
+						//send the number of unread comments
+							session.getBasicRemote().sendText(String.valueOf(res));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+	public synchronized static void sendToSession(int userId, boolean isOnline) {
+	//send to a specific user
+		OfferCommentUpdateManager commentUpdateManager = new OfferCommentUpdateManager();
+		Long res = isOnline?commentUpdateManager.getUnreadOfferCommentNum(userId):commentUpdateManager.getUnreadOfferCommentNumWS(userId);
+		List&lt;Session&gt; sessions = userSession.get(userId);
+		if(sessions!=null) {
+			for(Session session : sessions) {
+				if(session!=null) {
+					try {
+						session.getBasicRemote().sendText(String.valueOf(res));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+}
+            	</code></pre>
+            	<p><strong>3. Open the WebSocket in client side and listen on it</strong></p>
+            	<pre class="java-code"><code>
+function connectFollowWS(){
+	var wsFollowUri = getRootUri() + "/realtime/comments/"+userId;//the url contains the user id
+		websocketComment = new WebSocket(wsFollowUri);
+	    websocketComment.onmessage = onCommentMessage;
+}
+function getRootUri() {
+    return "ws://" + (document.location.hostname == "" ? "localhost" : document.location.hostname) + ":" +
+            (document.location.hostname == "" ? "8080" : ""/*document.location.port*/);
+   /* (document.location.port == "" ? "8080" : ""document.location.port);*/
+}
+
+function onCommentMessage(evt) {
+   
+    var data = evt.data;
+    if(data==='0'){
+    	//no comment and hide the notification symbol
+    	$(".realtime-comment").hide();
+    	
+    	$(".update-remind").hide();
+    }
+    else{
+    	//Show the number of new comment
+    	$(".realtime-comment").find(".commentnum").html(data);
+    	$(".realtime-comment").show();
+    	$(".update-remind").css('display','inline-block');
+    }
+}
+            	</code></pre>
+            	<p>This <a href="https://stackoverflow.com/questions/25947790/real-time-updates-from-database-using-jsf-java-ee">page</a> can help a lot.</p>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <!--<a href="d3-bar-chart-scale.html" class="navigation navigator-next" title="d3 scale bar chart">&#10095;</a>  -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+  </body>
+</html>

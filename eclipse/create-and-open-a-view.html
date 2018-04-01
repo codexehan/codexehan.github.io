@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Create and open a view">
+	<meta name="keywords" content="Eclipse,plugin,view">
+	<meta name="viewport" content="width=device-width">
+    <title>Create and open a custom view</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section ">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section active">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Create and open a custom view</h1>
+            </div>
+            <div id="article-content">
+             <p>1. Add view extension: org.eclipse.ui.views</p>
+			 <img src="images/org.eclipse.ui.views.png" alt="org.eclipse.ui.views">
+             <p>2. Add Category to view extension</p>
+			 <p><h3>What is a category?</h3>
+			 From the show view dialog of Eclipse, the "folder" is a category which is a view collection.
+			 </p>
+			 <img src="images/view-category.png" alt="view category">
+			 <p>Add a "custom plugin views" category and modify the id: CustomPlugin.views.category name: custom plugin views</p>
+             <img src="images/id-name-category.png" alt="edit id and name of cateogry">
+			 <p>3. Add view to the extension and edit the id, name, category and class</p>
+			 <img src="images/id-name-view.png"alt="edit id, name and category of view">
+			 <p>When we create view class, we often add ID to the class for conveniently called by other code. The ID should be same with the content of id above.</p>
+			<pre class="java-code"><code>import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.part.ViewPart;
+
+public class ExampleView1 extends ViewPart {
+public static final String ID = "CustomPlugin.views.ExampleView1";
+	public ExampleView1() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void createPartControl(Composite parent) {
+		// TODO Auto-generated method stub
+		Text text = new Text(parent, SWT.BORDER);
+		text.setText("Hello View");
+	}
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+			</code></pre>
+			<p>4. Result</p>
+			<img src="images/show-view.png" alt="show view">
+			<img src="images/custom-view.png" alt="custom view">
+			<div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			<div id="tip">
+			<p>Tips:
+			Generally, we won't open view through show view dialog. In this case, we can use
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
+			to show view in our program.</p>
+			</div>
+			</div>
+          </div>
+		  
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="set-view-position-on-perspective.html" class="navigation navigator-pre" title="set view position on perspective">&#10094;</a>
+      
+          <a href="add-view-to-perspective.html" class="navigation navigator-next" title="add view to perspective">&#10095;</a>
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

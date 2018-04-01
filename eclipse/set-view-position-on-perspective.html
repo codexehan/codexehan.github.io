@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Set view position on perspective">
+	<meta name="keywords" content="Eclipse,plugin,perspective,view">
+	<meta name="viewport" content="width=device-width">
+    <title>Set view position on perspective</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section active">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Set view position on perspective</h1>
+            </div>
+            <div id="article-content">
+             <p>1. Click Add button to add perspectiveExtensions extension(org.eclipse.ui.perspectiveExtensions)</p>
+			 <img src="images/org.eclipse.ui.perspectiveExtensions.png" alt="org.eclipse.ui.perspectiveExtensions">
+             <p>2. Set the targetID to "CustomPlugin.perspective" which is created in previous chapter</p>
+             <img src="images/perspective-extension.png" alt="perspective extension">
+             <p>3. Add a view to the perspectiveExtension. Here is org.eclipse.jdt.ui.PackageExplorer</p>
+             <img src="images/org.eclipse.jdt.ui.PackageExplorer.png" alt="org.eclipse.jdt.ui.PackageExplorer">
+             <p>4. Set the position of the Package Explorer on the perspective</p>
+			 <img src="images/view-position-on-perspective.png" alt="set view position on perspective">
+             <p><ul>Here are explanations of id, relationship, relative, and radio.
+			 <li>id: The view id that you want to add on the perspective</li>
+			<li>relative: the id of reference view, Generally, the "org.eclipse.ui.editorss" is perspective</li>
+			<li>ratio: set the initial size of view</li>
+			<li>relationship: the position of the added view with the "relative"
+			<ul><li>stack: stack with the "relative" (e.g. Console stack with the Problems view)</li>
+			<img src="images/stack-position.png" alt="stack position">
+			<li>left and right</li>
+			<img src="images/left-right-position.png" alt="left and right position">
+			<li>top and bottom</li>
+			<img src="images/top-bottom-position.png" alt="top and bottom position">
+			</ul></li></ul></p>
+			
+			<p>5. Before running the application, please clear the run-time workspace data. You can set in the Run Configurations. In our example, we set the package explorer shown on the left of our perspective and the ratio is 0.25</p>
+            <img src="images/clear-workspace.png" alt="clear workspace">
+			<p>6. Result</p>
+			<img src="images/add-project-explorer-to-perspective.png" alt="add project explorer to perspective">
+			<p>7. Add more views</p>
+			<img src="images/org.eclipse.ui.editorss.png" alt="org.eclipse.ui.editorss">
+			<p>8. Corresponding view extensions</p>
+			<img src="images/view-extensions.png" alt="view extensions">
+			 <div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			<div id="tip">
+				<p>Tips:
+				You can add your custom view on the perspective through setting the id of view in perspective extension. For details of creating custom views, please move to the View category. 
+				</p>
+			</div>
+			</div>
+          </div>
+		 
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="create-a-custom-perspective.html" class="navigation navigator-pre" title="create a custom perspective">&#10094;</a>
+      
+          <a href="create-and-open-a-view.html" class="navigation navigator-next" title="create and open a custom view">&#10095;</a>
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

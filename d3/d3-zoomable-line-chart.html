@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Zoomable Line Chart">
+	<meta name="keywords" content="D3 Zoomable Line Chart">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Zoomable Line Chart</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+		.tick line{
+			opacity: 0.2;
+		}
+		            
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Zoomable Line Chart</h1>
+            </div>
+            <div id="article-content">
+            	<div id="diagram"></div>
+            	  
+              <div id="tip">
+              	<p>Add clipPath to make sure that the line chart will go outside the outline.</p>
+              	<p>
+              	The <code>clipPath</code> SVG element defines a clipping path. A clipping path is used/referenced using the clip-path property.
+              	<br><br>
+				The clipping path restricts the region to which paint can be applied. Conceptually, any parts of the drawing that lie outside of the region bounded by the currently active clipping path are not drawn.<br><br>
+				A clipping path is conceptually equivalent to a custom viewport for the referencing element. Thus, it affects the rendering of an element, but not the element's inherent geometry. The bounding box of a clipped element (meaning, an element which references a <code>clipPath</code> element via a clip-path property, or a child of the referencing element) must remain the same as if it were not clipped. Check more details <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath">here</a>
+              	</p>
+              </div>
+              <pre class="java-code"><code>
+          .line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+          .tick line{
+			opacity: 0.2;
+		  }
+              </code></pre>
+              <pre class="java-code"><code>
+              	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width+margin.left+margin.right)
+				.attr("height",height+margin.top+margin.bottom)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+margin.left+","+margin.top+")");
+	
+	
+	var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+	//for each d, d[0] is the first num, d[1] is the second num
+	//set y scale
+	var yScale = d3.scaleLinear().range([0,height]).domain([d3.max(dataset,function(d){return d[1];}),0]);//show negative
+	//add x axis
+	var xScale = d3.scaleLinear().range([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);//scaleBand is used for  bar chart
+	
+	//sort x
+	dataset.sort(function(a,b){
+		if(a[0]< b[0]){
+			return -1;
+		}
+		else{
+			return 1;
+		}
+	})
+	
+	var line = d3.line()
+				.x(function(d){return xScale(d[0]);})
+				.y(function(d){return yScale(d[1]);})
+				.curve(d3.curveBasis);//default is d3.curveLinear
+	
+	//add line to svg. use path-->to know svg path
+	//must add css class line, you can try to remove it and see the result
+	var lineGroup = svg.append("g")
+	var linePath = lineGroup.append("path").attr("class","line").attr("d",line(dataset));
+	
+	//add x and y axis
+	var yAxis = d3.axisLeft(yScale).tickSize(-width);
+	var yAxisGroup = svg.append("g").call(yAxis);
+	
+
+	var xAxis = d3.axisBottom(xScale).tickSize(-height);/*.tickFormat("");remove tick label*/
+	var xAxisGroup = svg.append("g").call(xAxis).attr("transform", "translate(0,"+height+")");
+	
+	//add label for x axis and y axis
+	svg.append("text").text("Y Label")
+		.attr("x",0-height/2)
+		.attr("y",0-margin.left)
+		.attr("dy","1em")
+      	.style("text-anchor", "middle")
+		.attr("transform","rotate(-90)");
+	svg.append("text").text("X Label")
+		.attr("x",width/2)
+		.attr("y",height+margin.bottom)
+      	.style("text-anchor", "middle");
+		
+		
+	//add zoom
+	var zoom = d3.zoom()
+				.scaleExtent([1,30])// less than 1 means can resize smaller than  original size
+				.translateExtent([[-width,-height],[2*width,2*height]])
+				.on("zoom",zoomed);
+	function zoomed(){	
+		linePath.attr("transform",d3.event.transform);//move bar chart because we dont want to change the tick scale
+		xAxisGroup.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));//rescaleX - change the xScale domain with the transforming info
+		yAxisGroup.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));//rescaleY - change the yScale domain with the transforming info
+		
+		
+		/*xScale.domain(d3.event.transform.rescaleX(xScale).domain());
+		yScale.domain(d3.event.transform.rescaleY(yScale).domain());//cahnge the domain
+		
+		linePath.attr("d",line(dataset));
+		xAxisGroup.call(xAxis.scale(xScale));//rescaleX - change the xScale domain with the transforming info
+		yAxisGroup.call(yAxis.scale(yScale));//rescaleY - change the yScale domain with the transforming info*/
+	}
+	d3.select("svg").call(zoom);
+		
+	//add clip path to the svg
+	
+	d3.select("svg").append("defs").append("clipPath").attr("id","clip")
+		.append("rect").attr("width",width).attr("height",height);
+	lineGroup.attr("clip-path","url(#clip)");//line group is in a fixed position and the path will be moved
+              </code></pre>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+    <script>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width+margin.left+margin.right)
+				.attr("height",height+margin.top+margin.bottom)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+margin.left+","+margin.top+")");
+	
+	
+	var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+	//for each d, d[0] is the first num, d[1] is the second num
+	//set y scale
+	var yScale = d3.scaleLinear().range([0,height]).domain([d3.max(dataset,function(d){return d[1];}),0]);//show negative
+	//add x axis
+	var xScale = d3.scaleLinear().range([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);//scaleBand is used for  bar chart
+	
+	//sort x
+	dataset.sort(function(a,b){
+		if(a[0]<b[0]){
+			return -1;
+		}
+		else{
+			return 1;
+		}
+	})
+	
+	var line = d3.line()
+				.x(function(d){return xScale(d[0]);})
+				.y(function(d){return yScale(d[1]);})
+				.curve(d3.curveBasis);//default is d3.curveLinear
+	
+	//add line to svg. use path-->to know svg path
+	//must add css class line, you can try to remove it and see the result
+	var lineGroup = svg.append("g")
+	var linePath = lineGroup.append("path").attr("class","line").attr("d",line(dataset));
+	
+	//add x and y axis
+	var yAxis = d3.axisLeft(yScale).tickSize(-width);
+	var yAxisGroup = svg.append("g").call(yAxis);
+	
+
+	var xAxis = d3.axisBottom(xScale).tickSize(-height);/*.tickFormat("");remove tick label*/
+	var xAxisGroup = svg.append("g").call(xAxis).attr("transform", "translate(0,"+height+")");
+	
+	//add label for x axis and y axis
+	svg.append("text").text("Y Label")
+		.attr("x",0-height/2)
+		.attr("y",0-margin.left)
+		.attr("dy","1em")
+      	.style("text-anchor", "middle")
+		.attr("transform","rotate(-90)");
+	svg.append("text").text("X Label")
+		.attr("x",width/2)
+		.attr("y",height+margin.bottom)
+      	.style("text-anchor", "middle");
+		
+		
+	//add zoom
+	var zoom = d3.zoom()
+				.scaleExtent([1,30])// <1 means can resize smaller than  original size
+				.translateExtent([[-width,-height],[2*width,2*height]])
+				.on("zoom",zoomed);
+	function zoomed(){	
+		linePath.attr("transform",d3.event.transform);//move bar chart because we dont want to change the tick scale
+		xAxisGroup.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));//rescaleX - change the xScale domain with the transforming info
+		yAxisGroup.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));//rescaleY - change the yScale domain with the transforming info
+		
+		
+		/*xScale.domain(d3.event.transform.rescaleX(xScale).domain());
+		yScale.domain(d3.event.transform.rescaleY(yScale).domain());//cahnge the domain
+		
+		linePath.attr("d",line(dataset));
+		xAxisGroup.call(xAxis.scale(xScale));//rescaleX - change the xScale domain with the transforming info
+		yAxisGroup.call(yAxis.scale(yScale));//rescaleY - change the yScale domain with the transforming info*/
+	}
+	d3.select("svg").call(zoom);
+		
+	//add clip path to the svg
+	
+	d3.select("svg").append("defs").append("clipPath").attr("id","clip")
+		.append("rect").attr("width",width).attr("height",height);
+	lineGroup.attr("clip-path","url(#clip)");//line group is in a fixed position and the path will be moved
+</script>
+  </body>
+</html>

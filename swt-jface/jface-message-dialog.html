@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="JFace message dialog">
+	<meta name="keywords" content="Java,JFace,message dialog">
+	<meta name="viewport" content="width=device-width">
+    <title>JFace message dialog</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Table</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-table.html">Create a table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-menu-to-table.html">Add menu to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-text-and-combo-box-to-table.html">Add text and combo box to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-button-and-label-to-table.html">Add button and label to table</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Dialog</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="swt-color-dialog.html">SWT color dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-directory-dialog.html">SWT directory dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-file-dialog.html">SWT file dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-message-box.html">SWT message box</a>
+              </li>
+			  <li class="section active">
+                <a href="jface-message-dialog.html">JFace message dialog</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>JFace message dialog</h1>
+            </div>
+            <div id="article-content">
+			<img src="images/jface-message-dialog.png" alt="JFace message dialog">
+			 <p>JFace message dialog</p>
+			 <pre class="java-code"><code>import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
+
+public class Test {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Display d = new Display();
+		Shell s = new Shell(d);
+		s.setSize(200, 100);
+		s.setLayout(new FillLayout(SWT.VERTICAL));
+		//TODO: Add UI
+		Button btn = new Button(s, SWT.NONE);
+		btn.setText("Show...");
+		btn.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				MessageDialog dialog = new MessageDialog(s, "JFace Message Dialog", null,
+						"There is an error!", MessageDialog.ERROR, new String[] { "Btn1",
+						"Btn2", "Btn3" }, 0);
+					int result = dialog.open();
+					System.out.println(result);
+			   
+			}
+		});
+		
+		//UI End
+		s.open();
+
+		while (!s.isDisposed()) {
+		  if (!d.readAndDispatch())
+			d.sleep();
+		}
+		d.dispose();
+	  
+	}
+}
+			 </code></pre>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="swt-message-box.html" class="navigation navigator-pre" title="SWT message box">&#10094;</a>
+    <!--      <a href="jface-message-dialog.html" class="navigation navigator-next" title="JFace message dialog">&#10095;</a>  -->  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

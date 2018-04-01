@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add menu to table">
+	<meta name="keywords" content="SWT, JFace, menu, table">
+	<meta name="viewport" content="width=device-width">
+    <title>Create a table</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Table</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-table.html">Create a table</a>
+              </li>
+			  <li class="section active">
+                <a href="add-menu-to-table.html">Add menu to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-text-and-combo-box-to-table.html">Add text and combo box to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-button-and-label-to-table.html">Add button and label to table</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Dialog</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="swt-color-dialog.html">SWT color dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-directory-dialog.html">SWT directory dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-file-dialog.html">SWT file dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-message-box.html">SWT message box</a>
+              </li>
+			  <li class="section ">
+                <a href="jface-message-dialog.html">JFace message dialog</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add menu to table</h1>
+            </div>
+            <div id="article-content">
+			<img src="images/add-menu-to-table.png" alt="add menu to table">
+			 <p>Please call createContextMenu method after creating a table viewer. For TableViewerInput or other codes of creating table viewer, please refer to "Create A Table".</p>
+             <pre class="java-code"><code>protected void createContextMenu(Viewer viewer) {
+	MenuManager contextMenu = new MenuManager("#ViewerMenu"); //$NON-NLS-1$
+	contextMenu.setRemoveAllWhenShown(true);
+	contextMenu.addMenuListener(new IMenuListener() {
+		@Override
+		public void menuAboutToShow(IMenuManager manager) {
+			StructuredSelection selection = (StructuredSelection) viewer.getSelection();
+			if (selection != null) {
+				if (selection.getFirstElement() instanceof TableViewerInput) {
+					manager.add(new Action("Action 1") {
+						@Override
+						public void run() {
+							System.out.println("Action 1");
+						}
+					});
+					manager.add(new Action("Action 2") {
+						@Override
+						public void run() {
+							System.out.println("Action 2");
+						}
+					});
+				}
+			}
+		}
+	});
+
+	Menu menu = contextMenu.createContextMenu(viewer.getControl());
+	viewer.getControl().setMenu(menu);
+}
+			 </code></pre>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="create-a-table.html" class="navigation navigator-pre" title="create a table">&#10094;</a>
+          <a href="add-text-and-combo-box-to-table.html" class="navigation navigator-next" title="add text and combo box to table">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

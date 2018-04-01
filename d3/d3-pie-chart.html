@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Pie Chart">
+	<meta name="keywords" content="D3 Pie Chart">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Pie Chart</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+		.area {
+		  fill: steelblue;
+		}
+		.arc text {
+		  font: 10px sans-serif;
+		  text-anchor: middle;/*align text in SVG to middle*/
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Pie Chart</h1>
+            </div>
+            <div id="article-content">
+            	<div id="diagram"></div>
+           	  <div id="tip">
+           		<p>Note:</p>
+           		<p>To create pie chart, we need to use <strong>arc</strong> and <strong>pie</strong> in D3. Arc is to generate the pie chart. Pie is to transfer the input data for Arc. For example, the input is "dataset". The data format is shown below:</p>
+           		<p>[ <br>
+					{"data": <strong>dataset[0]</strong>, "value": 1, "index": 6, "startAngle": 6.050474740247008, "endAngle": 6.166830023713296, "padAngle": 0}, <br>
+					{"data": <strong>dataset[1]</strong>, "value": 1, "index": 7, "startAngle": 6.166830023713296, "endAngle": 6.283185307179584, "padAngle": 0}, <br>
+					{"data": <strong>dataset[2]</strong>, "value": 2, "index": 5, "startAngle": 5.817764173314431, "endAngle": 6.050474740247008, "padAngle": 0}, <br>
+					{"data": <strong>dataset[3]</strong>, "value": 3, "index": 4, "startAngle": 5.468698322915565, "endAngle": 5.817764173314431, "padAngle": 0}, <br>
+					{"data": <strong>dataset[4]</strong>, "value": 5, "index": 3, "startAngle": 4.886921905584122, "endAngle": 5.468698322915565, "padAngle": 0}, <br>
+					{"data": <strong>dataset[5]</strong>, "value": 8, "index": 2, "startAngle": 3.956079637853813, "endAngle": 4.886921905584122, "padAngle": 0}, <br>
+					{"data": <strong>dataset[6]</strong>, "value": 13, "index": 1, "startAngle": 2.443460952792061, "endAngle": 3.956079637853813, "padAngle": 0}, <br>
+					{"data": <strong>dataset[7]</strong>, "value": 21, "index": 0, "startAngle": 0.000000000000000, "endAngle": 2.443460952792061, "padAngle": 0} <br>
+				] 
+          		</p>
+           	  </div>
+            	
+           	  <pre class="java-code"><code>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	var radius = Math.min(width,height)/2;
+	
+	var color = d3.scaleOrdinal().range(d3.schemeCategory20b);//Constructs a new ordinal scale with an empty domain and the specified range. If a range is not specified, it defaults to the empty array; an ordinal scale always returns undefined until a non-empty range is defined.
+	
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width)
+				.attr("height",height)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+width/2+","+height/2+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [["A", 20], ["B", 90], ["C", 50], ["D", 33]];
+	//arc to draw the chart. pie to generate the data for chart from the input
+	//pie data example
+	/*[ 
+	{"data": dataset[0], "value": 1, "index": 6, "startAngle": 6.050474740247008, "endAngle": 6.166830023713296, "padAngle": 0}, 
+	{"data": dataset[1], "value": 1, "index": 7, "startAngle": 6.166830023713296, "endAngle": 6.283185307179584, "padAngle": 0}, 
+	{"data": dataset[2], "value": 2, "index": 5, "startAngle": 5.817764173314431, "endAngle": 6.050474740247008, "padAngle": 0}, 
+	{"data": dataset[3], "value": 3, "index": 4, "startAngle": 5.468698322915565, "endAngle": 5.817764173314431, "padAngle": 0}, 
+	{"data": dataset[4], "value": 5, "index": 3, "startAngle": 4.886921905584122, "endAngle": 5.468698322915565, "padAngle": 0}, 
+	{"data": dataset[5], "value": 8, "index": 2, "startAngle": 3.956079637853813, "endAngle": 4.886921905584122, "padAngle": 0}, 
+	{"data": dataset[6], "value": 13, "index": 1, "startAngle": 2.443460952792061, "endAngle": 3.956079637853813, "padAngle": 0}, 
+	{"data": dataset[7], "value": 21, "index": 0, "startAngle": 0.000000000000000, "endAngle": 2.443460952792061, "padAngle": 0} 
+	]*/
+	var arc = d3.arc().outerRadius(radius).innerRadius(0);//to generate the chart
+	var pie = d3.pie()
+				.value(function(d){return d[1];});//sort the value to show from the 12 0'clcok
+	var gs = svg.selectAll(".arc")
+		.data(pie(dataset))
+		.enter().append("g").attr("class","arc");//all arcs 
+	gs.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data);});
+		
+	//add text to pie chart
+	var arcTxt = d3.arc().outerRadius(radius-30).innerRadius(radius-10);
+	gs.append("text")
+		.attr("transform", function(d) { return "translate(" + arcTxt.centroid(d) + ")";})
+		.text(function(d){ return d.data[0]+":"+d.data[1];})
+		.attr("fill","white");
+		
+            	</code></pre>
+            	
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+        <script src="js/ajax.js"></script>
+    <script>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	var radius = Math.min(width,height)/2;
+	
+	var color = d3.scaleOrdinal().range(d3.schemeCategory20b);//Constructs a new ordinal scale with an empty domain and the specified range. If a range is not specified, it defaults to the empty array; an ordinal scale always returns undefined until a non-empty range is defined.
+	
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width)
+				.attr("height",height)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+width/2+","+height/2+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [["A", 20], ["B", 90], ["C", 50], ["D", 33]];
+	//arc to draw the chart. pie to generate the data for chart from the input
+	//pie data example
+	/*[ 
+	{"data": dataset[0], "value": 1, "index": 6, "startAngle": 6.050474740247008, "endAngle": 6.166830023713296, "padAngle": 0}, 
+	{"data": dataset[1], "value": 1, "index": 7, "startAngle": 6.166830023713296, "endAngle": 6.283185307179584, "padAngle": 0}, 
+	{"data": dataset[2], "value": 2, "index": 5, "startAngle": 5.817764173314431, "endAngle": 6.050474740247008, "padAngle": 0}, 
+	{"data": dataset[3], "value": 3, "index": 4, "startAngle": 5.468698322915565, "endAngle": 5.817764173314431, "padAngle": 0}, 
+	{"data": dataset[4], "value": 5, "index": 3, "startAngle": 4.886921905584122, "endAngle": 5.468698322915565, "padAngle": 0}, 
+	{"data": dataset[5], "value": 8, "index": 2, "startAngle": 3.956079637853813, "endAngle": 4.886921905584122, "padAngle": 0}, 
+	{"data": dataset[6], "value": 13, "index": 1, "startAngle": 2.443460952792061, "endAngle": 3.956079637853813, "padAngle": 0}, 
+	{"data": dataset[7], "value": 21, "index": 0, "startAngle": 0.000000000000000, "endAngle": 2.443460952792061, "padAngle": 0} 
+	]*/
+	var arc = d3.arc().outerRadius(radius).innerRadius(0);//to generate the chart
+	var pie = d3.pie()
+				.value(function(d){return d[1];});//sort the value to show from the 12 0'clcok
+	var gs = svg.selectAll(".arc")
+		.data(pie(dataset))
+		.enter().append("g").attr("class","arc");//all arcs 
+	gs.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data);});
+		
+	//add text to pie chart
+	var arcTxt = d3.arc().outerRadius(radius-30).innerRadius(radius-10);
+	gs.append("text")
+		.attr("transform", function(d) { return "translate(" + arcTxt.centroid(d) + ")";})
+		.text(function(d){ return d.data[0]+":"+d.data[1];})
+		.attr("fill","white");
+		
+	</script>
+  </body>
+</html>

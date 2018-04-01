@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Create tabbed property view">
+	<meta name="keywords" content="Eclipse,plugin,tabbed property view">
+	<meta name="viewport" content="width=device-width">
+    <title>Create tabbed property view</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+         <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section ">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section active">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Create tabbed property view</h1>
+            </div>
+            <div id="article-content">
+			 <p>In this section, we will show how to present and update the infomation of nodes in the project explorer on the property view.</p>
+             <p>1. Add org.eclipse.ui.views.properties.tabbed dependency.</p>
+			 <p>2. Add org.eclipse.ui.views.properties.tabbed.propertyContributor extension</p>
+			 <img src="images/org.eclipse.ui.views.properties.tabbed.propertyContributor.png" alt="org.eclipse.ui.views.properties.tabbed.propertyContributor">	
+			 <p>3. Make the project explorer implement the ITabbedPropertySheetPageContributor</p>
+			 <pre class="java-code"><code>import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.navigator.CommonNavigator;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+import customplugin.views.navigator.data.PropertiesTreeRootData;
+
+public class ProjectExplorer extends CommonNavigator implements ITabbedPropertySheetPageContributor{
+	
+	public static final String ID = "CustomPlugin.views.ProjectExplorer";
+	
+	protected IAdaptable getInitialInput(){
+		return new PropertiesTreeRootData();
+		}
+
+	@Override
+	public String getContributorId() {
+		// TODO Auto-generated method stub
+		return getSite().getId();
+	}
+	public Object getAdapter(Class adapter) {
+		super.getAdapter(adapter);
+		if (adapter == IPropertySheetPage.class)
+			return new TabbedPropertySheetPage(this);
+		return super.getAdapter(adapter);
+	}
+}
+			 </code></pre>
+			 <p>4. Add org.eclipse.ui.views.properties.tabbed.propertyTabs extension. This extension is used to manage the tab in the tabbed property view.</p>
+			 <p>Edit the contributorId to CustomPlugin.views.ProjectExplorer. Set the name of the tab to Name, category to Project Explorer defined before, and id to CustomPlugin.propertyTab.name.</p>
+			 <img src="images/property-tab.png" alt="property tab">
+			 <p>5. Add org.eclipse.ui.views.properties.tabbed.propertySections extension. Property section is used to create the UI.</p>
+			 <p>Edit the contributorId to CustomPlugin.views.ProjectExplorer.</p>
+			 <p>Edit the tab to CustomPlugin.propertyTab.name which means this property section is bound to the name tab.</p>
+			 <img src="images/property-section.png" alt="property section">
+			 <p>6. To create UI, we need to initialize the class: customplugin.views.property.NameSection. </p>
+			 <p>setInput and refresh method are important. Use the setInput method to get the selected element in the project explorer.</p>
+			 <p>The function is that we can modify the name of a node and the corresponding content will be updated on the project explorer.</p>
+			 <pre class="java-code"><code>import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+import customplugin.views.ProjectExplorer;
+import customplugin.views.navigator.data.PropertiesTreeData;
+
+public class NameSection extends AbstractPropertySection {
+	
+	private Text nameText;
+	private PropertiesTreeData data;
+	private ModifyListener nameListener = new ModifyListener(){
+		@Override
+		public void modifyText(ModifyEvent e) {
+			// TODO Auto-generated method stub
+			data.setName(nameText.getText());
+			IViewPart navigator = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ProjectExplorer.ID);//find the navigator
+			((ProjectExplorer)navigator).getCommonViewer().refresh(data);
+		}
+	};
+	public NameSection() {
+		// TODO Auto-generated constructor stub
+	}
+	public void createControls(Composite parent,TabbedPropertySheetPage aTabbedPropertySheetPage) {
+		super.createControls(parent, aTabbedPropertySheetPage);
+		Composite container = getWidgetFactory().createFlatFormComposite(parent);
+		container.setLayout(new GridLayout(2,false));
+		
+		GridData nameData = new GridData(SWT.BEGINNING, SWT.FILL, true, true, 1,1);
+		GridData descriptionData = new GridData(SWT.FILL, SWT.FILL, true, true, 1,1);
+		nameData.heightHint = 10;
+		nameData.widthHint = 150;
+		descriptionData.heightHint = 100;
+		
+		getWidgetFactory().createCLabel(container, "Name:");
+		nameText = getWidgetFactory().createText(container, "");
+		nameText.setLayoutData(nameData);
+	}
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
+		if(part instanceof ProjectExplorer){
+			Object object = ((IStructuredSelection) selection).getFirstElement();
+			if(object instanceof PropertiesTreeData){
+			   this.data = (PropertiesTreeData)object;
+		   }
+		}
+	}
+	public void refresh() {
+		nameText.removeModifyListener(nameListener);
+		nameText.setText(data.getName());
+		nameText.addModifyListener(nameListener);
+	}
+}
+			 </code></pre>
+			 <p>7. Meanwhile, we need to add a filter to this property section which is customplugin.filters.NameSectionFilter.</p>
+			 <pre class="java-code"><code>import org.eclipse.jface.viewers.IFilter;
+import customplugin.views.navigator.data.PropertiesTreeData;
+
+public class NameSectionFilter implements IFilter {
+
+	@Override
+	public boolean select(Object toTest) {
+		// TODO Auto-generated method stub
+		if(toTest instanceof PropertiesTreeData){
+			return true;
+		}
+		return false;
+	}
+
+}
+			 </code></pre>
+			 <p>8. Result</p>
+			 <img src="images/eclipse-property-view.png" alt="eclipse property view">
+			 <img src="images/eclipse-tabbed-property-sheet.png" alt="eclipse tabbed property sheet">
+			 <p>9. In the following section, we will present how to add multiple tabs and property sections.</p>
+			 <p>Repeat the step 4 and 5 to add another tab and its property section.</p>
+			 <p>10. Add Description tab and set the afterTab to the id of General tab.</p>
+			 <img src="images/multiple-property-tabs.png" alt="multiple property tabs">
+			 <p>11. Add Description section to the Description tab</p>
+			 <img src="images/multiple-property-sections.png" alt="multiple property sections">
+			 <p>12. Create customplugin.views.property.DescriptionSection class</p>
+			 <pre class="java-code"><code>import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+public class DescriptionSection extends AbstractPropertySection {
+
+	public DescriptionSection() {
+		// TODO Auto-generated constructor stub
+	}
+	 public void createControls(Composite parent,TabbedPropertySheetPage aTabbedPropertySheetPage) {
+			super.createControls(parent, aTabbedPropertySheetPage);
+			Composite container = getWidgetFactory().createFlatFormComposite(parent);
+			container.setLayout(new GridLayout(2,false));
+			
+			GridData nameData = new GridData(SWT.BEGINNING, SWT.FILL, true, true, 1,1);
+			GridData descriptionData = new GridData(SWT.FILL, SWT.FILL, true, true, 1,1);
+			nameData.heightHint = 10;
+			nameData.widthHint = 150;
+			descriptionData.heightHint = 100;
+			
+			getWidgetFactory().createCLabel(container, "Add custom UI here...");
+		   
+		}
+}
+			 </code></pre>
+			 <p>13. Result</p>
+			 <img src="images/tabbed-property-view.png" alt="tabbed property view">
+			 <div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			</div>
+          </div>
+		  
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>
+      <!--    <a href="create-tabbed-property-view.html" class="navigation navigator-next" title="create tabbed property view">&#10095;</a>   -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

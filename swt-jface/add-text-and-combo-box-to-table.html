@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add text and combo box to table">
+	<meta name="keywords" content="SWT,JFace,Text,Combo box,table">
+	<meta name="viewport" content="width=device-width">
+    <title>Add text and combo box to table</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Table</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-table.html">Create a table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-menu-to-table.html">Add menu to table</a>
+              </li>
+			  <li class="section active">
+                <a href="add-text-and-combo-box-to-table.html">Add text and combo box to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-button-and-label-to-table.html">Add button and label to table</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Dialog</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="swt-color-dialog.html">SWT color dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-directory-dialog.html">SWT directory dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-file-dialog.html">SWT file dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-message-box.html">SWT message box</a>
+              </li>
+			  <li class="section ">
+                <a href="jface-message-dialog.html">JFace message dialog</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add text and combo box to table</h1>
+            </div>
+            <div id="article-content">
+			<img src="images/add-text-to-table.png" alt="add text to table">
+			<img src="images/add-combo-to-table.png" alt="add combo box to table">
+			 <p>Both the functions will be implemented through adding editing support.</p>
+			 <p>All codes are based on the JFace table viewer in  Create A Table. The first column is editable and the second column is a combo box.</p>
+             <p>Editing Support</p>
+			 <pre class="java-code"><code>public class TableViewerEditingSupport extends EditingSupport{
+	private CellEditor editor;
+	private TableViewer tableviewer;
+	private int column;
+	public TableViewerEditingSupport(ColumnViewer viewer, int column) {
+		super(viewer);
+		// TODO Auto-generated constructor stub
+		this.tableviewer = (TableViewer) viewer;
+		switch(column){
+		case 0:
+			editor = new TextCellEditor(tableviewer.getTable());//first column
+			break;
+		case 1:
+			editor = new ComboBoxCellEditor(tableviewer.getTable(), new String[]{"combo1","combo2"});//second column; contents are combo and combo2
+			break;
+		}
+		this.column = column;
+	}
+
+	@Override
+	protected CellEditor getCellEditor(Object element) {
+		// TODO Auto-generated method stub
+		return editor;
+	}
+
+	@Override
+	protected boolean canEdit(Object element) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	protected Object getValue(Object element) {
+		// TODO Auto-generated method stub
+		if(element instanceof TableViewerInput){
+			TableViewerInput input = (TableViewerInput)element;
+			switch(column){
+			case 0:
+				return input.getColumn1();
+			case 1:
+				//return corresponding index in combobox
+				if("combo1".equals(input.getColumn2())){
+					return 0;
+				}
+				else if("combo2".equals(input.getColumn2())){
+					return 1;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected void setValue(Object element, Object value) {
+		// TODO Auto-generated method stub
+		 if(element instanceof TableViewerInput){
+			 TableViewerInput input = (TableViewerInput)element;
+			 switch(column){
+			 case 0:
+				 input.setColumn1(value.toString());
+				 break;
+			 case 1:
+				 int index = (Integer)value;
+				 if(index == 0){
+					 input.setColumn2("combo1");
+				 }
+				 else if(index == 1){
+					 input.setColumn2("combo2");
+				 }
+				 break;
+			 }
+			 
+			 tableviewer.update(element, null);
+		 }
+	}
+ }
+			 </code></pre>
+			 <p>Add editing support to table viewer</p>
+			 <pre class="java-code"><code>TableViewer tableViewer = new TableViewer(container,SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+Table table = tableViewer.getTable();
+table.setHeaderVisible(true);
+table.setLinesVisible(true);
+TableViewerColumn viewerCol1 = new TableViewerColumn(tableViewer,SWT.NONE);
+TableColumn col1 = viewerCol1.getColumn();
+col1.setText("Column 1");
+col1.setWidth(100);
+viewerCol1.setEditingSupport(new TableViewerEditingSupport(tableViewer, 0));//editable text
+TableViewerColumn viewerCol2 = new TableViewerColumn(tableViewer,SWT.NONE);
+TableColumn col2 = viewerCol2.getColumn();
+col2.setText("Column 2");
+col2.setWidth(100);
+viewerCol2.setEditingSupport(new TableViewerEditingSupport(tableViewer, 1));//combobox
+tableViewer.setContentProvider(new TableViewerContentProvider());
+tableViewer.setLabelProvider(new TableViewerLabelProvider());
+		
+tableViewer.add(new TableViewerInput("col1_1","combo1"));
+tableViewer.add(new TableViewerInput("col2_1","combo2"));
+			 </code></pre>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="add-menu-to-table.html" class="navigation navigator-pre" title="add menu to table">&#10094;</a>
+          <a href="add-button-and-label-to-table.html" class="navigation navigator-next" title="add button and label to table">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Seven sorting algorithm">
+	<meta name="keywords" content="Sorting Algorithm,Java">
+	<meta name="viewport" content="width=device-width">
+    <title>Seven sorting algorithm</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+    
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Seven sorting algorithm</h1>
+            </div>
+            <div id="article-content">
+			 <p>In this section, 7 sorting algorithms, which are bubble sort, insert sort, select sort, shell sort, merge sort, quick sort and merge sort, will be introduced. The following array will be used to explain the process of every sorting algorithm.</p>
+			 <p>1.Bubble Sort</p>
+			 <pre>
+				<p>(1) Compare two adjacent numbers. If the previous number is bigger than the next number, do swap.</p>
+				<p>(2) Through the step 1 for the array, the biggest number will be moved to the tail of the array.</p>
+			</pre>
+			<p>The implementation of bubble sort:</p>
+			<pre class="java-code"><code>public void bubbleSort(int[] a){
+        int tmp = 0;
+        boolean flag = true;
+        for(int i = 0; i < a.length && flag; i++){
+            flag = false;
+            for(int j = 1; j < a.length - i; j++){ 
+                        if(a[j - 1] > a[j]){
+                    tmp = a[j - 1];
+                    a[j - 1] = a[j];
+                    a[j] = tmp;
+                    flag = true;
+                }
+            }
+        }
+    }
+			</code></pre>
+			<p>The flag is used for the case when the array is ordered.</p>
+			<p>2. Insert Sort</p>
+			<pre>
+				<p>(1) Seperate the array to two regions: Ordered Region and Disordered Region.</p>
+				<p>(2) Select a number from Disordered Region and insert it to the Ordered Region</p>
+			</pre>
+			<p>The implementation of insert sort:</p>
+			<pre class="java-code"><code>public void insertSort(int[] a){
+        int tmp = 0;
+        for(int i = 1; i < a.length; i++){ for(int j = i -1; j >= 0 && a[j+1] < a[j]; j--){
+                tmp = a[j +1];
+                a[j + 1] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+			</code></pre>
+			<p>3. Select Sort</p>
+			<pre>
+				<p>(1) Seperate the array to two regions: Ordered Region and Disordered Region.</p>
+				<p>(2) Select a the smallest number from Disordered Region and insert it to the end of Ordered Region</p>
+			</pre>
+			<p>The implementation of select sort:</p>
+			<pre class="java-code"><code>public void selectSort(int[] a){
+        int k = 0;
+        int tmp = 0;
+        for(int i = 0; i < a.length - 1; i++){
+            k = i;
+            for(int j = i + 1; j < a.length; j++){
+                //select the smallest one
+                if(a[j] < a[k]){
+                    k = j;
+                }
+            }
+            if(k != i){
+                tmp = a[i];
+                a[i] = a[k];
+                a[k] = tmp;
+            }
+        }
+    }
+			</code></pre>
+			<p>4. Shell Sort</p>
+			<pre>
+				<p>(1) Divide the array with a decreased gap to several subarray</p>
+				<p>(2) Do the insert sort for every subarray</p>
+				<p>(3) Repeat steps above until the gap become to 0</p>
+			</pre>
+			<p>The implementation of shell sort:</p>
+			<pre class="java-code"><code>public void shellSort(int[] a){
+        int tmp = 0;
+        int n = a.length;
+        int gap = 0;
+        for(gap = n/2; gap > 0; gap = gap/2){
+            for(int i = 0; i < gap; i++){//for every subarray
+                for(int j = i + gap; j < a.length; j = j+ gap){ for(int m = j - gap; m >= 0 && a[m + gap] < a[m]; m = m - gap){
+                        tmp = a[m];
+                        a[m] = a[m + gap];
+                        a[m + gap] = tmp;
+                    }
+                }
+            }
+        }
+    }
+			</code></pre>
+			<p>Simply shell sort:</p>
+			<pre class="java-code"><code>//remove one iteration
+    public static void simplyShellSort(int[] a){
+        int tmp = 0;
+        int gap = 0;
+        for(gap = a.length/2; gap > 0; gap = gap/2){
+            for(int i = gap ; i < a.length; i++){ for(int j = i - gap; j >= 0 && a[j + gap] < a[j]; j = j- gap){
+                    tmp = a[j];
+                    a[j] = a[j + gap];
+                    a[j + gap] = tmp;
+                }
+            }
+        }
+    }
+			</code></pre>
+			<p>5. Merge Sort</p>
+			<pre>
+				<p>(1) Divide the array to subarray which contains only one number</p>
+				<p>(2) Sort and merge in pairs</p>
+				<p>3) Repeat (2) until the all subarray is merged to one array</p>
+			</pre>
+			<p>The implementation of merge sort:</p>
+			<pre class="java-code"><code>public int[] mergeSort(int[] a){
+        int left = 0;
+        int right = a.length -1;
+        return mergeSort(left, right, a);
+    }
+    public int[] mergeSort(int left, int right, int[] a){
+        if(left == right){
+            return new int[]{a[right]};
+        }
+        int mid = (left + right)/2;
+        int[] leftArray = mergeSort(left, mid, a);
+        int[] rightArray = mergeSort(mid + 1, right, a);
+        return merge(leftArray, rightArray);
+    }
+    public int[] merge(int[] left, int[] right){
+        int left_i = 0;
+        int right_i = 0;
+        int k = 0;
+        int[] finalArray = new int[left.length + right.length];
+        while(left_i < left.length && right_i < right.length){
+            if(left[left_i] < right[right_i]){
+                finalArray[k++] = left[left_i];
+                left_i++;
+            }
+            else{
+                finalArray[k++] = right[right_i];
+                right_i++;
+            }
+        }
+        while(left_i < left.length){
+            finalArray[k++] = left[left_i++];
+        }
+        while(right_i < right.length){
+            finalArray[k++] = right[right_i++];
+        }
+        return finalArray;
+    }
+			</code></pre>
+			<p>6. Quick Sort</p>
+			<pre>
+				<p>(1) Select a number from the array as the base number</p>
+				<p>(2) Put the bigger number on the right side of the base  number and smaller number on the left side</p>
+				<p>(3) Repeat (1) and (2) for the left array and right array of base number until there is only one number in the array</p>
+			</pre>
+			<p>The implementation of quick sort:</p>
+			<pre class="java-code"><code>public void quickSort(int left, int right, int[] a){
+        if(left < right){
+            int position = getBasePosition(left, right, a);
+            quickSort(left, position - 1, a);
+            quickSort(position + 1, right, a);
+        }
+    }
+    public int getBasePosition(int left, int right, int[]a){
+        int base = a[left];              
+        while(left < right){//cannot use left != right because
+            //search smaller one
+            while(left < right && a[right] > base){
+                right--;
+            }
+            if(left < right && a[right] <= base){
+                a[left] = a[right];
+                left++;
+            }
+            //search bigger one
+            while(left < right && a[left] <= base){
+                left++;
+            }
+            if(left < right && a[left] > base){
+                a[right] = a[left];
+                right--;
+            }
+        }
+        a[left] = base;
+        return left;
+    }
+			</code></pre>
+			<p>7. Map Sort</p>
+			<pre>
+				<p>For node i in an array, its parent node is (i - 1)/2 and two children nodes are 2 * i + 1 and 2 * i + 2 respectively.</p>
+			</pre>
+			<p>The implementation of map sort:</p>
+			<pre class="java-code"><code>  public void buildMinheap(int a[]){
+        for(int i = (a.length - 1)/2; i >= 0; i--){
+            shiftDown(a, i, a.length);
+        }
+    }
+    public void insert(int[] a, int n, int val){
+        a[n] = val;
+        shiftUp(a, n);
+    }
+    public void shiftUp(int[] a, int i){
+        for(int j = (i - 1)/2; i > 0 && a[i] < a[j]; i = j, j = (i - 1)/2){
+            a[i] ^= a[j];
+            a[j] ^= a[i];
+            a[i] ^= a[j];
+        }
+    }
+    public void delete(int[] a, int n){
+        if(a[0] != a[n-1]){//
+            a[0] ^= a[n-1];
+            a[n-1] ^= a[0];
+            a[0] ^= a[n-1];
+        }
+        shiftDown(a, 0, n -1);
+    }
+    public void shiftDown(int[] a, int i, int n){
+        for(int left = 2*i + 1, right = left + 1; i <= (n - 1)/2 && left < n; i = left, left = 2*i + 1, right = left + 1){		
+            if(right < n){//compare left and right child
+                if(a[right] < a[left]){
+                    left = right;
+                }
+            }
+            if(a[left] < a[i]){
+                a[left] ^= a[i];
+                a[i] ^= a[left];
+                a[left] ^= a[i];
+            }
+            else{
+                break;
+            }
+        }
+    }
+			</code></pre>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="swt-message-box.html" class="navigation navigator-pre" title="SWT message box">&#10094;</a>
+    <!--      <a href="jface-message-dialog.html" class="navigation navigator-next" title="JFace message dialog">&#10095;</a>  -->  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

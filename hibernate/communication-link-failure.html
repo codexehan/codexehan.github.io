@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="Hibernate Exceptions Hibernate Communication Link Failure">
+	<meta name="keywords" content="Hibernate Exceptions Hibernate Communication Link Failure">
+	<meta name="viewport" content="width=device-width">
+    <title>Hibernate Communication Link Failure</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Hibernate Introduction</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="hibernate-tutorial.html">Hibernate Tutorial</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Hibernate JBoss Tool</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="install-hibernate-jboss-tool.html">Install Hibernate JBoss tool</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-configuration-file.html">Generate hibernate.cfg.xml file</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-mapping-file.html">Generate hibernate mapping file</a>
+              </li>
+              
+            </ul>
+            
+          </li>
+          <li class="chapter">
+            <a><strong>Hibernate Exceptions</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-exceptions.html">Hibernate Exceptions</a>
+				</li>
+           		<li class="section active">
+					<a href="communication-link-failure.html">Communication Link Failure</a>
+				</li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate APIs</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-get-load.html">Get vs Load</a>
+				</li>            	
+				<li class="section ">
+					<a href="hibernate-opensession-getcurrentsession.html">openSession vs getCurrentSession</a>
+				</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Hibernate Communication Link Failure</h1>
+            </div>
+            <div id="article-content">
+			<p><strong>Use C3P0 connection pool to manage</strong></p>
+			<p>Import &nbsp;hibernate-c3p0.jar the in your project</p>
+			<pre class="java-code"><code>
+	&lt;dependency&gt;
+	    &lt; groupId&gt;org.hibernate&lt;/groupId&gt;
+	    &lt; artifactId&gt;hibernate-core&lt;/artifactId&gt;
+	    &lt; version&gt;5.2.10.Final&lt;/version&gt;
+	&lt;/dependency&gt;
+	
+	&lt;!-- Hibernate c3p0 connection pool --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+		&lt;artifactId&gt;hibernate-c3p0&lt;/artifactId&gt;
+		&lt;version&gt;5.2.10.Final&lt;/version&gt;
+	&lt;/dependency&gt;
+			</code></pre>
+			<p>Configure the C3P0 in the hibernate configuration file</p>
+			<pre class="java-code"><code>
+&lt;hibernate-configuration&gt;
+ &lt;session-factory name="as"&gt;
+  &lt;property name="hibernate.dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;
+  &lt;property name="hibernate.connection.driver_class"&gt;com.mysql.jdbc.Driver&lt;/property&gt;
+  &lt;!-- database details --&gt;
+  &lt;property name="hibernate.connection.url"&gt;...&lt;/property&gt;
+  &lt;property name="hibernate.connection.username"&gt;....&lt;/property&gt;
+  &lt;property name="hibernate.connection.password"&gt;....&lt;/property&gt;
+  &lt;property name="hibernate.current_session_context_class"&gt;thread&lt;/property&gt;
+  
+  &lt;property name="hibernate.c3p0.min_size"&gt;5&lt;/property&gt;
+  &lt;property name="hibernate.c3p0.max_size"&gt;20&lt;/property&gt;
+  &lt;property name="hibernate.c3p0.timeout"&gt;3000&lt;/property&gt;
+  &lt;property name="hibernate.c3p0.max_statements"&gt;50&lt;/property&gt;
+  &lt;property name="hibernate.c3p0.idle_test_period"&gt;300&lt;/property&gt;
+  
+
+ &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;
+			</code></pre>
+			<p>
+				hibernate.c3p0.min_size – Minimum number of JDBC connections in the pool. Hibernate default: 1<br>
+
+				hibernate.c3p0.max_size – Maximum number of JDBC connections in the pool. Hibernate default: 100<br>
+
+				hibernate.c3p0.timeout – When an idle connection is removed from the pool (in second). Hibernate default: 0, never expire.<br>
+
+				hibernate.c3p0.max_statements – Number of prepared statements will be cached. Increase performance. Hibernate default: 0 , caching is disable.<br>
+
+				hibernate.c3p0.idle_test_period – idle time in seconds before a connection is automatically validated. Hibernate default: 0<br>
+				<strong>Value of timeout should be larger than test period.</strong>
+			</p>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="hibernate-exceptions.html" class="navigation navigator-pre" title="hibernate exception">&#10094;</a>
+          <a href="hibernate-get-load.html" class="navigation navigator-next" title="get vs load">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script> 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="J2EE sign up process">
+	<meta name="keywords" content="J2EE sign up process">
+	<meta name="viewport" content="width=device-width">
+    <title>Sign Up Process</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  <style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title" style="opacity:1;">
+              <h1>Sign Up Process</h1>
+            </div>
+            <div id="article-content">
+            	<p>The brief process of signing up is that the user submit the form which contains the email address and password. The server should send the an activation email to the user. The email content should contain a link which has the activation code. After the user clicks the link, user's account will become active. active</p>
+            	
+            	<p>For the email verification, the verification token(i.e. activation code) must meet following criteria:<br>
+
+            	-It must link back to the User (via a unidirectional relation)<br>
+
+				-It will be created right after registration<br>
+
+				-It will expire within 24 hours following its creation<br>
+
+				-Has a unique, randomly generated value<br>
+
+            	</p>
+            	<p>The detailed steps of signing up are shown as below:</p>
+            	<img src="images/send-email.png" style="height:300px">
+            	<p><strong>Technical points</strong><br>
+				<a href="http://www.codexe.net/j2ee/password-encryption.html">Password encryption</a></p>
+            	<p>The detailed steps of user activation are shown as below:</p>
+            	<img src="images/token-verification.png" style="height:350px">
+            	<p><strong>Technical points</strong><br>
+				<a href="http://www.codexe.net/j2ee/java-send-email.html">Java send email</a></p>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <!--<a href="d3-bar-chart-scale.html" class="navigation navigator-next" title="d3 scale bar chart">&#10095;</a>  -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+  </body>
+</html>

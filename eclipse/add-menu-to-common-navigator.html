@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add menu to common navigator">
+	<meta name="keywords" content="Eclipse,menu,common navigator">
+	<meta name="viewport" content="width=device-width">
+    <title>Add menu to common navigator</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+         <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section ">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section active">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add menu to common navigator</h1>
+            </div>
+            <div id="article-content">
+			 <p>In this section, we will introduce two methods about how to add menu to a common navigator.</p>
+			 <p><strong>The First Method: Add menus defined eclipse to common navigator</strong></p>
+             <p>1-1. Add a popupMenu to the navigator viewer.</p>
+			 <img src="images/popup-menu-of-navigator.png" alt="popup menu of navigator">
+			 <p>1-2.Set the popupMenuID to org.eclipse.ui.examples.navigator.view.menu which is the  menu of eclipse  and add insertionPoints. The example is shown as below.</p>
+			 <img src="images/org.eclipse.ui.example.navigator.view.menu.png" alt="org.eclipse.ui.example.navigator.view.menu">	
+			<p>1-3. The above operations will add menus defined eclipse, like "New", "Open", and so on, to common navigator.</p>
+			<p><strong>The Second Method: Add custom menus defined by developers to common navigator through org.eclipse.ui.popupMenus and org.eclipse.ui.navigator.navigatorContent/actionProvider</strong></p>
+			<p>The implementation is based on previous example.</p>
+			<p>We will add custom "Add A Node" menu to common navigator in the following example. The action will add a child node of the PropertiesTreeParentData.</p>
+			<p>2-1.Create add action class: AddNodeAction which extends org.eclipse.jface.action.Action. The function is to add a children node to the PropertiesTreeParentNode.</p>
+			<pre class="java-code"><code>import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchPage;
+import customplugin.views.ProjectExplorer;
+import customplugin.views.navigator.data.PropertiesTreeData;
+import customplugin.views.navigator.data.PropertiesTreeParentData;
+
+public class AddNodeAction extends Action {
+	private IWorkbenchPage page;
+	private PropertiesTreeParentData data;
+	private ISelectionProvider selectionProvider;
+	
+	public AddNodeAction(IWorkbenchPage p, ISelectionProvider selectionProvider) {
+		setText("Add A Child Node"); //name of action
+		this.page = p;
+		this.selectionProvider = selectionProvider;
+	}
+	
+	public boolean isEnabled() {
+
+		ISelection selection = selectionProvider.getSelection();
+
+		if(!selection.isEmpty()){
+			IStructuredSelection sSelection = (IStructuredSelection) selection;
+			if(sSelection.getFirstElement() instanceof PropertiesTreeParentData){
+				data = (PropertiesTreeParentData) sSelection.getFirstElement();
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	public void run() {
+		PropertiesTreeData childNode = new PropertiesTreeData("new child", null, data.getProject());
+		data.addChild(childNode);
+		//refresh the navigator
+		ProjectExplorer navigator = (ProjectExplorer) page.findView(ProjectExplorer.ID);
+		navigator.getCommonViewer().refresh(data);
+	}
+}
+			</code></pre>
+			<p>2-2. Add actionProvider to org.eclipse.ui.navigator.navigatorContent extension. And create the class customplugin.views.navigator.NavigatorActionProvider.</p>
+			<img src="images/action-provider-of-navigator.png" alt="action provider of navigator">
+			<p>2-3. The codein navigator action provider. Create ID for action like ACTION_ADD = "group.add". This id will be used in the popup menu. Eclipse can use it find the exact action.</p>
+			<p>In the init method, create the add action object and add it to the action list and action Group.</p>
+			<p>The fillContextMenu method is called every time when you right click the navigator. It is used to show(disable or enable) the actions in the menu. Thus, we use isEnable method in action to disable/enable the action. For instance, if the element selected is PropertiesTreeData, the isEnable of add action will return false. Then the setEnable method will disable it in the menu.</p>
+			<p>However, the disable action will also be added to the menu by menu.appendToGroup().</p>
+			<pre class="java-code"><code>import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.ui.navigator.CommonActionProvider;
+import org.eclipse.ui.navigator.ICommonActionExtensionSite;
+import org.eclipse.ui.navigator.ICommonViewerSite;
+import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import customplugin.views.navigator.actions.AddNodeAction;
+
+public class NavigatorActionProvider extends CommonActionProvider {
+	
+	public final static String ACTION_ADD = "group.add";
+	
+	private List actionList;
+	private Map<Action, String> actionGroup;
+	
+	public NavigatorActionProvider() {
+		// TODO Auto-generated constructor stub
+	}
+	public void init(ICommonActionExtensionSite aSite) {
+
+		ICommonViewerSite viewSite = aSite.getViewSite();
+		if (viewSite instanceof ICommonViewerWorkbenchSite) {
+			ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
+
+			actionList = new ArrayList();
+			actionGroup = new HashMap<Action, String>();
+			
+			Action addNodeAction = new AddNodeAction(workbenchSite.getPage(),
+					workbenchSite.getSelectionProvider());
+			actionList.add(addNodeAction);
+			
+			actionGroup.put(addNodeAction, ACTION_ADD);
+		}
+	}
+	public void fillContextMenu(IMenuManager menu) {
+			
+			for (Action act : actionList) {
+				act.setEnabled(act.isEnabled());
+				menu.appendToGroup(actionGroup.get(act), act);
+			}
+	}
+}
+			</code></pre>
+			<p>2-4. Add customplugin.views.navigator.data.PropertiesTreeParentData instance to the action provider as shown in the figure below. It means that actions created in this action provider will show only when the selected object is a PropertiesTreeParentData object. If you want it to show on the PropertiesTreeData you need to add PropertiesTreeData instead of ProperjtiesTreeParentData. Note: The PropertiesTreeParentData is also a kind of PropertiesTreeData. So both of these two objects will show the actions in the action provider.</p>
+			<img src="images/disable-actions-in-navigator.png" alt="disable actions in navigator">
+			<p>Then add the action provider to the viewer action binding node as an action extension of the common navigator.</p>
+			<img src="images/bind-action-provider.png" alt="bind action provider">
+			<p>2-5. The last step is same with the first method. Add popup menu to the navigator viewer. And add insertion point to the menu. The name of the insertion point is "group.add" which is same with the definition in the aciton provider.</p>
+			<img src="images/popup-menu-insert-menu.png" alt="popup menu insert points">
+			<p>2-6. The result of Add action</p>
+			<img src="images/add-menu-to-navigator.png" alt="add menu to navigator">
+			<div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			<div id="tip">
+				<p>Tips:</p>
+				<p>Based on the implementation of the second method, it is easy to add more custom actions in the menu.</p>
+				<p>First, extend the org.eclipse.jface.action.Action to create the custom actions.</p>
+				<p>Second, initialize the action in the init method of action provider. Remember to add ID to the action. Generally, the format is "group.action name".</p>
+				<p>At last, add an insertion point in the popup menu of your navigator viewer. The name of insertion point is same with your action id defined in the action provider(group.action name).</p>
+			</div>
+			</div>
+          </div>
+		  
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="show-custom-data-on-navigator.html" class="navigation navigator-pre" title="show custom data on navigator">&#10094;</a>
+          <a href="add-sorter-to-common-navigator.html" class="navigation navigator-next" title="add sorter to common navigator">&#10095;</a>
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-110963818-1');
+	</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add contents to common navigator">
+	<meta name="keywords" content="Eclipse,plugin,common navigator">
+	<meta name="viewport" content="width=device-width">
+    <title>Add contents to common navigator</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+		<a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+         <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section ">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section active">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add contents to common navigator</h1>
+            </div>
+            <div id="article-content">
+			 <p>In this section, we will add a child node to "file" in the navigator. To implement, we need a custom data structure as a child node, new content provider, and label provider for the navigator.</p>
+             <p>1. Create PropertiesTreeData as child node added on the common navigator. We will show the name of it on navigator.</p>
+             <pre class="java-code"><code>import java.util.UUID;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+
+public class PropertiesTreeData {
+	// TODO Auto-generated constructor stub
+	private String name;
+	private IFile file;
+	private IProject project;
+	private String ID = UUID.randomUUID().toString();//make the object unique
+	
+	public PropertiesTreeData(String name, IFile file, IProject project) {
+		// TODO Auto-generated constructor stub
+		this.name = name;
+		this.file = file;
+		this.project = project;
+	}
+
+	public String getID(){
+		return this.ID;
+	}
+	public IProject getProject(){
+		return this.project;
+	}
+	public String getName(){
+		return this.name;
+	}
+	/**
+	 * Eclispe will use Set to save the node shown on the navigator. Thus, it is necessary to implement this method.
+	 */
+	public int hashCode() {
+		return ID.hashCode();
+	}
+	/**
+	 * The inner code will call this method to find the exact node when the user want to make update to the navigator
+	 */
+	public boolean equals(Object obj) {
+		return obj instanceof PropertiesTreeData
+				&& ((PropertiesTreeData) obj).getID().equals(ID);
+	} 
+}
+			 </code></pre>
+			 <p>2. Add navigator content to org.eclipse.ui.navigator.navigatorContent extension. The id of navigator content is CustomPlugin.views.navigator.NavigatorContent. Add content provider and label provider which are customplugin.views.navigator.NavigatorContentProvider and customplugin.views.navigator.NavigatorLabelProvider respectively. Specifically, the content provider controls nodes shown on the navigator while label provider provides text and image to the node. The initialization of providers will be introduced later.</p>
+			<img src="images/org.eclipse.ui.navigator.navigatorContent2.png" alt="org.eclipse.ui.navigtor.navigatorContent">			
+			<p>3. Add triggerPoints and possibleChildren to your navigator content. The triggerPoints indicates which type of elements expected to show on the navigator. The possibleChildren indicates which type of elements may be able to provide a label or parent.
+				<p>For triggerPoints, add org.eclipse.core.resources.IResource and customplugin.views.navigator.data.PropertiesTreeData which means this navigator allows elements in resource or PropertiesTreeData to show.</p>
+				<p>For possibleChildren, just add customplugin.views.navigator.data.PropertiesTreeData.</p>
+			</p>
+			<img src="images/trigger-points-possible-children.png" alt="trigger piints and possible children"> 
+			<p>4.  Add navigator content in last step to the viewerContentBinding as a content extension. This operation will bind the custom navigator content to the common navigator.</p> 
+			<img src="images/viewer-content-binding.png" alt="viewer content binding">
+			<p>5. Now, it¡¯s time to implement the content provider and label provider.
+				<p>The content provider should implement the ITreeContentProvider which must implement getElements(Object input), getChildren(Object parent), hasChildren(Object element), and getParent(Object element).</p>
+				<p>The getElements() method searches parent node which can simply call getChildren().</p>
+				<p>The getChilldren() will accept the object which describes in <triggerPoints/> extension. Here is resource object and PropertiesTreeData.</p>
+				<p>For elements as children, the hasChildren() should return true.</p>
+			</p>
+			<pre class="java-code"><code>import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+
+import customplugin.views.navigator.data.PropertiesTreeData;
+
+public class NavigatorContentProvider implements ITreeContentProvider {
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Object[] getElements(Object inputElement) {
+		// TODO Auto-generated method stub
+		return getChildren(inputElement);
+	}
+
+	@Override
+	public Object[] getChildren(Object parentElement) {
+		// TODO Auto-generated method stub
+ // if the parent element is IFile, add a PropertiesTreeData as child node
+		if(parentElement instanceof IFile){
+			IFile file = (IFile) parentElement;
+			String name = file.getName() +"[Tree Data]";
+			PropertiesTreeData propertiesTreeData = new PropertiesTreeData(name, file, file.getProject());
+			return new Object[]{propertiesTreeData};
+		}
+		return null;
+	}
+
+	@Override
+	public Object getParent(Object element) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasChildren(Object element) {
+		// TODO Auto-generated method stub
+		if(element instanceof IFile){
+			return true;
+		}
+		return false;
+	}
+}
+			</code></pre>
+			<p>The label provider implements org.eclipse.jface.viewers.ILabelProvider and org.eclipse.ui.navigator.IDescriptionProvider.</p>
+			<p>The getText() and getImage() methods shows name and image shown on the viewer.</p>
+			<pre class="java-code"><code>import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.navigator.IDescriptionProvider;
+
+import customplugin.views.navigator.data.PropertiesTreeData;
+
+public class NavigatorLabelProvider extends LabelProvider implements ILabelProvider, IDescriptionProvider{
+	
+	@Override
+	public String getText(Object element){
+		if(element instanceof PropertiesTreeData){
+			return ((PropertiesTreeData)element).getName();
+		}
+		return null;
+	}
+	@Override
+	public Image getImage(Object element){
+		if(element instanceof PropertiesTreeData){
+			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		}
+		return null;
+	}
+	@Override
+	public String getDescription(Object anElement) {
+		// TODO Auto-generated method stub
+		return "This is a tree data";
+	}
+}
+			</code></pre>
+			<p>6. Result
+				<p>Create a general project and add a text file named "My File" to it. Then, a child node is added to the file node. This node is that our PropertiesTreeData object.</p>
+			</p>
+			<img src="images/show-file-in-common-navigator.png" alt="show file in common navigator"> 
+			<div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			</div>
+          </div>
+		  
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="add-filter-to-common-navigator.html" class="navigation navigator-pre" title="add filter to common navigator">&#10094;</a>
+      
+          <a href="show-custom-data-on-navigator.html" class="navigation navigator-next" title="show custom data on navigator">&#10095;</a>
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

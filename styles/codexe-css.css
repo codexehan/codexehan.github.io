@@ -1,0 +1,250 @@
+  * {
+    box-sizing:border-box;
+  } 
+  body,html{
+    height:100%;
+    margin:0;
+  }
+  body{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  a{
+    text-decoration:none;
+  }
+  h1{
+	  font-size:20px;
+  }
+  #book{
+    position:relative;
+    width:100%;
+    height:100%;
+  }
+  #book-summary{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    width:300px;
+    overflow:auto;
+    transition:0.5s;
+    white-space:nowrap;
+    z-index:2;
+  }
+  #book-summary,#collapse,#expand{
+    background-color:#FAFAFA;
+  }
+  #book-container{
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:300px;
+    transition:left 0.5s;
+    overflow-y:hidden;
+    background-color:#f2f2f2;
+  }
+  #book-body{
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+  }
+  #book-content img{
+	  display:block;
+	  margin:auto;
+	  max-width:calc(100% - 100px);
+	  -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+	  -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+	  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+	  padding: 10px;
+	  background: white;
+	  border: 1px solid #8a4419;
+  }
+  #tip{
+	background-color: #ffffcc;/*#ffffcc*/
+    border-left: 6px solid #ffeb3b;
+	margin-top: 16px;
+    margin-bottom: 16px;
+	padding: 0.01em 16px;
+  }
+  #book-content{
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    overflow-y:auto;
+ }
+  #book-title{
+    margin:auto;
+    text-align:center;
+    justify-content: center;
+    line-height:30px;
+    opacity:0;
+    color:black;
+    width:50%;
+  }
+  #book-title:hover{
+    opacity:0.7;
+  }
+  #article-content{
+    max-width:800px;
+    margin:auto;
+    padding:0 10px;
+    color:black;
+  }
+  #summary-control{
+    position:absolute;
+    left:0;
+    top:40%;
+    width:310px;
+    height:20%;
+  }
+  #summary-control,#collapse,#expand{
+    border-radius:10px;
+    z-index:1;
+    transition:left 0.5s;
+  }
+  #collapse, #expand{
+    height:100%;
+    cursor:pointer;
+    display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:column;
+    text-align:right;
+    width:100%;
+    color: black;
+	font-weight:900;
+	font-size:22px;
+  }
+   #collapse:hover,  #expand:hover{
+    background-color:#bbb;
+    color:white;
+  }
+  #expand{
+    display:none;
+  }
+  
+  .chapter-list{
+    padding-left:8px;
+  }
+  .section-list{
+    padding-left:20px;
+  }
+  .chapter-list, .section-list{
+    list-style-type:none;
+  }
+  .chapter,.section{
+    margin-top: 20px;
+    margin-bottom:20px;
+  }
+  li.active>a{
+    color: #008cff;
+  }
+  .chapter a{
+    text-decoration:none;
+    color:black;
+  }
+  .section-list a:hover{
+    text-decoration:underline;
+  }
+  
+ 
+  .navigation{
+    position: absolute;
+    top: 0;
+    bottom:0;
+    margin: 0;
+    max-width: 150px;
+    min-width:80px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    font-size: 40px;
+    color: #ccc;
+    text-align: center;
+  }
+  .navigation:hover{
+    color:black;
+  }
+  @media (max-width: 1240px){
+    .navigation{
+      top: auto;
+      bottom:auto;
+      max-width: 25%;
+      width: 25%;
+      font-size:30px;
+    }
+    .navigatior-pre{
+      float:left;
+    }
+    .navigator-next{
+      float:right;
+    }
+  }
+  .navigator-next{
+    right:15px;
+  }
+  .navigator-pre{
+    left:0;
+  }
+.java-code{
+	 border-left: 6px solid #04931c;
+ }
+
+  #top-arrow{ 
+    position:absolute;
+    cursor:pointer;
+    margin:auto;
+	left:50%;
+	bottom:0;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+    width:50px;
+    height:20px;
+    display: none;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    font-size: 40px;
+    text-align: center;
+    color:#ccc;
+    animation:animateTop 0.5s linear infinite alternate;
+    -webkit-animation:animateTop 0.5s linear infinite alternate;
+    -moz-animation:animateTop 0.5s linear infinite alternate;
+  }
+  #top-arrow:hover{
+    color:black;
+  }
+  @-webkit-keyframes animateTop{
+    from{bottom:0;}
+    to{bottom:10px;}
+  }
+  @keyframes animateTop{
+    from{bottom:0;}
+    to{bottom:10px;}
+  }
+  #back-home{
+	  display:block;
+	  margin: 10px 75px;
+	color:black;
+  }
+  #error-page{
+	  text-align:center;
+	  margin:auto;
+	  font-size:150px;
+	  font-weight:600;
+  }
+  #error-page img{
+	  vertical-align:text-bottom;
+  }
+  #error-description{
+	  font-size:30px;
+	  font-weight:100;
+  }

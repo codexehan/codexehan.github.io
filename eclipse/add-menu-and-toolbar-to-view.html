@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add menu and toolbar to view">
+	<meta name="keywords" content="Eclipse,plugin,menu,toolbar,view">
+	<meta name="viewport" content="width=device-width">
+    <title>Add menu and toolbar to view</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Get Started</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-an-eclipse-plugin.html">Create an eclipse plugin</a>
+              </li>
+            </ul>
+          </li>
+          
+         <li class="chapter">
+            <a><strong>Perspective</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-custom-perspective.html">Create a custom perspective</a>
+              </li>
+              <li class="section ">
+                <a href="set-view-position-on-perspective.html">Set view position on perspective</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-and-open-a-view.html">Create and open a custom view</a>
+              </li>
+              <li class="section ">
+                <a href="add-view-to-perspective.html">Add view to perspective</a>
+              </li>
+              <li class="section active">
+                <a href="add-menu-and-toolbar-to-view.html">Add menu and toolbar to view</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="chapter">
+            <a><strong>Common Navigator</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-common-navigator.html">Create a common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-filter-to-common-navigator.html">Add fillter to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-contents-to-common-navigator.html">Add contents to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="show-custom-data-on-navigator.html">Example: Let navigator only show your data</a>
+              </li>
+              <li class="section ">
+                <a href="add-menu-to-common-navigator.html">Add menu to common navigator</a>
+              </li>
+              <li class="section ">
+                <a href="add-sorter-to-common-navigator.html">Add sorter to common navigator</a>
+              </li>
+            </ul>
+          </li>
+          
+           <li class="chapter">
+            <a><strong>Tabbed Property View</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-tabbed-property-view.html">Create tabbed property view</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add menu and toolbar to view</h1>
+            </div>
+            <div id="article-content">
+			 <p>This article has three sections which are "Add Menu", "Add Drop-down List", "Add Toolbar".</p>
+			 <h4>Section 1: Add Menu</h4>
+             <p>1. Add command extension point: org.eclipse.ui.commands. Add command to command extension and set the id: CustomPlugin.commands.Hello</p>
+			 <img src="images/org.eclipse.ui.commands.png" alt="org.eclipse.ui.commands">
+             <p>2. Every command should have a handler which is responsible for making responses after calling the command from the menu. Add code to the default handler: customplugin.handlers.SayHello. When the user click the "Hello" menu, a "Say Hello" dialog will popup.</p>
+			 <pre class="java-code"><code>import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
+
+public class SayHello extends AbstractHandler {
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		// TODO Auto-generated method stub
+		MessageDialog.openInformation(null, "Say Hello", "Hello");
+		return null;
+	}
+}
+			</code></pre>
+			<p>3. Add menu extension: org.eclipse.ui.menus. And add the menu contribution to the extension. The locationURI is important to control the position of the menu.</p>
+			<p>There are some examples of locationURI from the eclipse website:
+				<ul>
+					<li>menu:org.eclipse.ui.main.menu?after=window -insert this contribution in the main menu after the Window menu.</li>
+					<li>menu:file?after=additions-insert this contribution in the File menu after the additions group. Equivalent to the old menubarPath="file/additions".</li>
+					<li>menu:org.eclipse.ui.views.ContentOutline?after=additions -insert this contribution in the Content Outline view dropdown menu after the additions group.</li>
+					<li>toolbar:org.eclipse.ui.views.ContentOutline?after=additions -insert this contribution in the Content Outline view toolbar, after the additions group.</li>
+					<li>popup:org.eclipse.ui.examples.propertysheet.outline?after=additions -insert this contribution in the Property Sheet outline page context menu after the additions group.</li>
+				</ul>
+			</p>
+			<p>In the implementation of adding menu to a view, the locationURI should be "menu:" + view id. Here is menu:CustomPlugin.views.ExampleView1</p>
+			<img src="images/org.eclipse.ui.menus.png" alt="org.eclipse.ui.menus.png">
+			<p>4. Add command to the menu contribution, The command id is CustomPlugin.commands.hello</p>
+			<img src="images/menuContribution.png" alt="menuContribution">
+			<p>5. Result</p>
+			<img src="images/menu-in-view.png" alt="menu in view">
+			<img src="images/menu-result.png" alt="menu in view">
+			<h4>Section 2: Add Drop-down List</h4>
+			<p>In this section, a drop-down list menu will be added to the menu. And the secondary menu will also show a "Say Hello" dialog.</p>
+			<p>1. Based on the previous implementation, add "menu" to menu contribution and set the menu label to “Hello Menu 2nd”.</p>
+			<img src="images/drop-down-list-menu.png" alt="drop down list">
+			<p>2. Add command to "Hello Menu 2nd" menu. The command will become the secondary menu. We set the commandId to CustomPlugin.commands.Hello</p>
+			<img src="images/menu-command.png" alt="menu command">
+			<p>3. Result</p>
+			<img src="images/dropdown-list.png" alt="drop down list">
+			<h4>Section 3: Add Toolbar</h4>
+			<p>In this section, the "Hello" command will be added to the toolbar of the view.</p>
+			<p>1. Add a menu contribution to the org.eclipse.ui.menus extension. Set the locationURI to toolbar:CustomPlugin.views.ExampleView1.</p>
+			<img src="images/toolbar-locationURI.png" alt="toolbar locationURI">
+			<p>2. Add the CustomPlugin.commands.Hello command to the menu contribution. Add set the icon to icons/sample.gif</p>
+			<img src="images/toolbar-command.png" alt="toolbar command">
+			<p>3. Result</p>
+			<img src="images/view-toolbar.png" alt="view toolbar">
+			<div style="margin:20px 20px;">
+				<form action="https://github.com/zhenchaobing/eclipse-plugin-development" style="text-align: center;">
+					<input style="padding:10px 10px;cursor:pointer" type="submit" value="View Source Code" />
+				</form>
+          	</div>
+			</div>
+          </div>
+
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="add-view-to-perspective.html" class="navigation navigator-pre" title="add view to perspective">&#10094;</a>
+      
+          <a href="create-a-common-navigator.html" class="navigation navigator-next" title="create a common navigator">&#10095;</a>
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script> 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="Google OAuth 2.0">
+	<meta name="keywords" content="Google OAuth 2.0">
+	<meta name="viewport" content="width=device-width">
+    <title>Google OAuth 2.0</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  <style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title" style="opacity:1;">
+              <h1>Google OAuth 2.0</h1>
+            </div>
+            <div id="article-content">
+            <img src="images/google-oauth.PNG" style="height:250px;">
+             <p><strong>Prerequisites</strong></p>
+                <ol>
+                	<li>Get Google API Access credentials (Client ID, Client Secret). Set from <a href="https://code.google.com/apis/console/">https://code.google.com/apis/console/</a></li>
+                </ol>
+              <p>The process of OAuth is shown in the figure</p>
+               <img src="images/oauth-process.png">
+               <ol>
+                 <li>Use the client id and secret to go to the specific link  provided by google to get the authorization code. The code will be retrun to the callback url.</li>
+                 <li>Use the code to get the access token</li>
+               	<li>Use the access token to get user info</li>
+               </ol>
+               <p><strong>GoogleOAuthHelper</strong> - Contains all APIs to get the access token and user info. What you should do is just make the <code>CLIENT_ID</code>, <code>CLIENT_SECRET</code>, <code>CALLBACK_URI</code> to your own value.</p>
+               <pre class="java-code"><code>
+ public class GoogleOAuthHelper {
+	/**
+	 * Please provide a value for the CLIENT_ID constant before proceeding, set this up at https://code.google.com/apis/console/
+	 */
+	private static final String CLIENT_ID = "xxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com";
+	/**
+	 * Please provide a value for the CLIENT_SECRET constant before proceeding, set this up at https://code.google.com/apis/console/
+	 */
+	private static final String CLIENT_SECRET = "xxxxxxxxxxxxxxxxxxxx";
+
+	/**
+	 * Callback URI that google will redirect to after successful authentication
+	 */
+	private static final String CALLBACK_URI = "http://localhost:8080/oauth/google";//http://localhost:8080/oauth/google
+	
+	// start google authentication constants
+	private static final Collection<String> SCOPE = Arrays.asList("https://www.googleapis.com/auth/userinfo.profile;https://www.googleapis.com/auth/userinfo.email".split(";"));
+	private static final String USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
+	 
+	private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	// end google authentication constants
+	
+	private String stateToken;
+	
+	private final GoogleAuthorizationCodeFlow flow;
+	
+	/**
+	 * Constructor initializes the Google Authorization Code Flow with CLIENT ID, SECRET, and SCOPE 
+	 */
+	public GoogleOAuthHelper() {
+		flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
+				JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, SCOPE).build();
+		generateStateToken();
+	}
+
+	/**
+	 * Builds a login URL based on client ID, secret, callback URI, and scope 
+	 */
+	public String getAuthCodeURL() {
+		
+		final GoogleAuthorizationCodeRequestUrl url = flow.newAuthorizationUrl();
+	
+		return url.setRedirectUri(CALLBACK_URI).setState(stateToken).build();
+	}
+	
+	/**
+	 * Generates a secure state token 
+	 */
+	private void generateStateToken(){
+
+		SecureRandom sr1 = new SecureRandom();
+
+		stateToken = "google;"+sr1.nextInt();
+
+	}
+
+	/**
+	 * Accessor for state token
+	 */
+	public String getStateToken(){
+		return stateToken;
+	}
+
+	/**
+	 * Expects an Authentication Code, and makes an authenticated request for the user's profile information
+	 * @return JSON formatted user profile information
+	 * @param authCode authentication code provided by google
+	 */
+	public String getUserInfoJson(final String authCode) throws IOException {
+		try {
+			//1.get access token
+			final GoogleTokenResponse response = flow.newTokenRequest(authCode).setRedirectUri(CALLBACK_URI).execute ();
+			final Credential credential = flow.createAndStoreCredential(response, null);
+			final HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(credential);
+			//2.user access token to get user info
+			final GenericUrl url = new GenericUrl(USER_INFO_URL);
+			final HttpRequest request = requestFactory.buildGetRequest(url);
+			request.getHeaders().setContentType("application/json");
+			final String jsonIdentity = request.execute().parseAsString();
+			return jsonIdentity;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
+              </code></pre>
+               <p><strong>OAuthGoogleClServlet</strong> - Callback URI to get access token and user info</p>
+              <pre class="java-code"><code>
+
+@WebServlet("/oauth/google")            	
+public class OAuthGoogleClServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public OAuthGoogleClServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//get google user's basic info
+		//exact code and get access token
+	
+		String code = request.getParameter("code");
+		if(code!=null) {
+			GoogleOAuthHelper helper = new GoogleOAuthHelper();
+			String userProfile = helper.getUserInfoJson(code);
+			//extract user info and save to database
+			JsonParser parser = new JsonParser();
+			JsonObject userJson = parser.parse(userProfile).getAsJsonObject();
+			String email = userJson.get("email").getAsString();
+			System.out.println(email);
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+            	</code></pre>
+              <p>In the front-end page, add the <strong>HTML</strong> code.</p>
+              <pre class="java-code"><code>
+              	&lt;a class="btn btn-group-justified text-center" href="/login/google" style="background-color:#D0422A;color:white" href=“”&gt;&lt;img src="/images/google.png" style="height:20px"&gt; Google OAuth&lt;/a&gt;
+              </code></pre>
+              <p>The "<strong>/login/google</strong>" is mainly to get the code.</p>
+              <pre class="java-code"><code>
+@WebServlet("/login/google")   
+public class LoginGoogleClServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public LoginGoogleClServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//go to get auth code form google auth server
+		HttpSession session = request.getSession(false);
+		GoogleOAuthHelper helper = new GoogleOAuthHelper();
+		String url = helper.getAuthCodeURL();
+		//go to google login page to get the auth code
+		response.sendRedirect(url);
+	}
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+	
+}
+
+               </code></pre>	
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <!--<a href="d3-bar-chart-scale.html" class="navigation navigator-next" title="d3 scale bar chart">&#10095;</a>  -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+  </body>
+</html>

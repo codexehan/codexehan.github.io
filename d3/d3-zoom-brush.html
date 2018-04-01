@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Zoom Brush">
+	<meta name="keywords" content="D3 Zoom Brush">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Zoom Brush</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+		.tick line{
+			opacity: 0.2;
+		}
+		
+		.area {
+		  fill: steelblue;
+		  clip-path: url(#clip);
+		}
+
+		.zoom {
+		  cursor: move;
+		  fill: none;
+		  pointer-events: all;
+		}
+		            
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Zoom Brush</h1>
+            </div>
+            <div id="article-content">
+            <div id="diagram"></div>
+           	 
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+    <script>
+	var margin = {top: 20, right: 20, bottom: 120, left: 40};
+    var margin2 = {top: 410, right: 20, bottom: 30, left: 40};	
+    var width = 960 - margin.left - margin.right;
+    var height = 500 - margin.top - margin.bottom;
+	var height2 = 500 - margin2.top - margin2.bottom;
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width+margin.left+margin.right)
+				.attr("height",height+margin.top+margin.bottom)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+margin.left+","+margin.top+")");
+	
+	var parseDate = d3.timeParse("%b %Y");
+
+var x = d3.scaleTime().range([0, width]),
+    x2 = d3.scaleTime().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]),
+    y2 = d3.scaleLinear().range([height2, 0]);
+
+var xAxis = d3.axisBottom(x),
+    xAxis2 = d3.axisBottom(x2),
+    yAxis = d3.axisLeft(y);
+
+var brush = d3.brushX()
+    .extent([[0, 0], [width, height2]])
+    .on("brush end", brushed);//brush height is fixed
+
+var zoom = d3.zoom()
+    .scaleExtent([1, Infinity])//infinity large
+    .translateExtent([[0, 0], [width, height]])
+	.extent([[0, 0], [width, height]])//view point (0,0) (width,height)
+    .on("zoom", zoomed);
+
+var area = d3.area()
+    .curve(d3.curveMonotoneX)
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.price); });
+
+var area2 = d3.area()
+    .curve(d3.curveMonotoneX)
+    .x(function(d) { return x2(d.date); })
+    .y0(height2)
+    .y1(function(d) { return y2(d.price); });
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+var focus = svg.append("g")
+    .attr("class", "focus")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var context = svg.append("g")
+    .attr("class", "context")
+    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+d3.csv("sp500.csv", type, function(error, data) {
+  if (error) throw error;
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain([0, d3.max(data, function(d) { return d.price; })]);
+  x2.domain(x.domain());
+  y2.domain(y.domain());
+
+  focus.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", area);
+
+  focus.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  focus.append("g")
+      .attr("class", "axis axis--y")
+      .call(yAxis);
+
+  context.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", area2);
+
+  context.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  context.append("g")
+      .attr("class", "brush")
+      .call(brush)
+      .call(brush.move, x.range());//set intial brush area. 
+
+  svg.append("rect")
+      .attr("class", "zoom")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .call(zoom);
+});
+
+function brushed() {
+  if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+  var s = d3.event.selection || x2.range();
+  x.domain(s.map(x2.invert, x2));//change the input 
+  focus.select(".area").attr("d", area);
+  focus.select(".axis--x").call(xAxis);
+  svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+      .scale(width / (s[1] - s[0]))
+      .translate(-s[0], 0));
+}
+
+function zoomed() {
+  if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+  var t = d3.event.transform;
+
+  focus.select(".area").attr("d", area);
+//	focus.select(".area").attr("transform",t);
+	 x.domain(t.rescaleX(x2).domain());
+  focus.select(".axis--x").call(xAxis);
+  context.select(".brush").call(brush.move, x());//invert calculate the input from output
+}
+
+function type(d) {
+  d.date = parseDate(d.date);
+  d.price = +d.price;
+  return d;
+}
+</script>
+  </body>
+</html>

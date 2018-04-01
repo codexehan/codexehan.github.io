@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Scale Scatter Diagram With Axis">
+	<meta name="keywords" content="D3 Scale Scatter Diagram With Axis">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Scale Scatter Diagram With Axis</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Scale Scatter Chart With Axis</h1>
+            </div>
+            <div id="article-content">
+            	<div id="diagram"></div>
+            	<pre class="java-code"><code>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("body").append("svg")
+				.attr("width",width+margin.left+margin.right)
+				.attr("height",height+margin.top+margin.bottom)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+margin.left+","+margin.top+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+	//for each d, d[0] is the first num, d[1] is the second num
+	//set y scale
+	var yScale = d3.scaleLinear().rangeRound([0,height]).domain([d3.max(dataset,function(d){return d[1];}),0]);
+	//add x axis
+	var xScale = d3.scaleLinear().rangeRound([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);//scaleBand is used for  bar chart
+	
+	var barpadding = 2;
+	var circles = svg.selectAll("circle").data(dataset).enter().append("circle");
+	circles.attr("cx",function(d){
+			  return xScale(d[0]);//i*(width/dataset.length);
+			  })
+	.attr("cy",function(d){
+		return yScale(d[1]);
+	})//for bottom to top
+	.attr("r", 3);
+	circles.attr("fill",function(d){
+		return "orange";
+	});
+	
+	//add x and y axis
+	var yAxis = d3.axisLeft(yScale);
+	svg.append("g").call(yAxis);
+	
+
+	var xAxis = d3.axisBottom(xScale);/*.tickFormat("");remove tick label*/
+	svg.append("g").call(xAxis).attr("transform", "translate(0,"+height+")");
+	
+	//add label for x axis and y axis
+	svg.append("text").text("Y Label")
+		.attr("x",0-height/2)
+		.attr("y",0-margin.left)
+		.attr("dy","1em")
+      	.style("text-anchor", "middle")
+		.attr("transform","rotate(-90)");
+	svg.append("text").text("X Label")
+		.attr("x",width/2)
+		.attr("y",height+margin.bottom)
+      	.style("text-anchor", "middle");
+            	</code></pre>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+        <script src="js/ajax.js"></script>
+    <script>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 200 - margin.top - margin.bottom;
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width+margin.left+margin.right)
+				.attr("height",height+margin.top+margin.bottom)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+margin.left+","+margin.top+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [[5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]];
+	//for each d, d[0] is the first num, d[1] is the second num
+	//set y scale
+	var yScale = d3.scaleLinear().rangeRound([0,height]).domain([d3.max(dataset,function(d){return d[1];}),0]);//show negative
+	//add x axis
+	var xScale = d3.scaleLinear().rangeRound([0,width]).domain([0,d3.max(dataset, function(d){return d[0];})]);//scaleBand is used for  bar chart
+	
+	var barpadding = 2;
+	var circles = svg.selectAll("circle").data(dataset).enter().append("circle");
+	circles.attr("cx",function(d){
+			  return xScale(d[0]);//i*(width/dataset.length);
+			  })
+	.attr("cy",function(d){
+		return yScale(d[1]);
+	})//for bottom to top
+	.attr("r", 3);
+	circles.attr("fill",function(d){
+		return "orange";
+	});
+	
+	//add x and y axis
+	var yAxis = d3.axisLeft(yScale);
+	svg.append("g").call(yAxis);
+	
+
+	var xAxis = d3.axisBottom(xScale);/*.tickFormat("");remove tick label*/
+	svg.append("g").call(xAxis).attr("transform", "translate(0,"+height+")");
+	
+	//add label for x axis and y axis
+	svg.append("text").text("Y Label")
+		.attr("x",0-height/2)
+		.attr("y",0-margin.left)
+		.attr("dy","1em")
+      	.style("text-anchor", "middle")
+		.attr("transform","rotate(-90)");
+	svg.append("text").text("X Label")
+		.attr("x",width/2)
+		.attr("y",height+margin.bottom)
+      	.style("text-anchor", "middle");
+	</script>
+  </body>
+</html>

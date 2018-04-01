@@ -1,0 +1,25 @@
+[
+  [
+	["Sign Up"],
+	[
+		["Sign Up Process", "http://www.codexe.net/j2ee/sign-up-process.html"],
+		["Password Encryption", "http://www.codexe.net/j2ee/password-encryption.html"],
+		["Java Send Email", "http://www.codexe.net/j2ee/java-send-email.html"]
+	]
+  ],
+  [
+	["Sign In"],
+	[
+		["Remember Me", "http://www.codexe.net/j2ee/remember-me.html"],
+		["Verification Code", "http://www.codexe.net/j2ee/java-create-verification-code.html"],
+		["Google OAuth 2.0", "http://www.codexe.net/j2ee/google-oauth.html"]
+	]
+  ],
+  [
+	["Real-Time Notification"],
+	[
+		["AJAX Long Polling", "http://www.codexe.net/j2ee/ajax-long-polling.html"],
+		["WebSocket", "http://www.codexe.net/j2ee/websocket.html"]
+	]
+  ]
+]

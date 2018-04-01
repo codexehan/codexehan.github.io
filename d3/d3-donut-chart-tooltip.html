@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="D3 Donut Chart With Tooltip">
+	<meta name="keywords" content="D3 Donut Chart With Tooltip">
+	<meta name="viewport" content="width=device-width">
+    <title>D3 Donut Chart With Tooltip</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  	<style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+		.area {
+		  fill: steelblue;
+		}
+		.arc text {
+		  font: 10px sans-serif;
+		  text-anchor: middle;/*align text in SVG to middle*/
+		}
+		#diagram{
+			position:relative;
+			width:410px;
+			height:230px;
+			margin:auto;
+		}
+		.tooltip{
+		background: #eee; 
+        box-shadow: 0 0 5px #999999;                                    
+        color: #333;                                                    
+        display: none;                                                  
+        font-size: 12px;                                                
+        left: 160px;                                                  
+        padding: 10px;                                                  
+        position: absolute;                                             
+        text-align: center;                                             
+        top: 80px;                                                      
+        width: 100px;                                                    
+        z-index: 10; 
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+		  
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>D3 Donut Chart With Tooltip</h1>
+            </div>
+            <div id="article-content">
+           	  <div id="diagram"></div>
+           	  
+              <pre class="java-code"><code>
+	#diagram{
+		position:relative;
+		width:410px;
+		height:230px;
+		margin:auto;
+	}
+	.tooltip{
+		background: #eee; 
+        box-shadow: 0 0 5px #999999;                                    
+        color: #333;                                                    
+        display: none;                                                  
+        font-size: 12px;                                                
+        left: 160px;                                                  
+        padding: 10px;                                                  
+        position: absolute;                                             
+        text-align: center;                                             
+        top: 80px;                                                      
+        width: 100px;                                                    
+        z-index: 10; 
+		}
+              </code></pre>
+           	  <pre class="java-code"><code>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    	var width = 500 - margin.left - margin.right;
+    	var height = 300 - margin.top - margin.bottom;
+	
+	var radius = Math.min(width,height)/2;
+	
+	var color = d3.scaleOrdinal().range(d3.schemeCategory20b);//Constructs a new ordinal scale with an empty domain and the specified range. If a range is not specified, it defaults to the empty array; an ordinal scale always returns undefined until a non-empty range is defined.
+	
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width)
+				.attr("height",height)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+width/2+","+height/2+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [["A", 20], ["B", 90], ["C", 50], ["D", 33], ["E", 95],
+                ["F", 12], ["G", 44], ["H", 67], ["I", 21], ["J", 88]];
+	//arc to draw the chart. pie to generate the data for chart from the input
+	var donutWidth = 20;
+	var arc = d3.arc().outerRadius(radius).innerRadius(radius-donutWidth);//to generate the chart
+	var pie = d3.pie()
+				.value(function(d){return d[1];});//sort the value to show from the 12 0'clcok
+	var gs = svg.selectAll(".arc")
+		.data(pie(dataset))
+		.enter().append("g").attr("class","arc");//all arcs 
+	var paths = gs.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data);});
+	//add legend to the donut chart
+
+	var legendSize = 15;
+	var legendSpacing = 2;
+	var legend = svg.selectAll(".legend")
+		.data(color.domain())
+		.enter()
+		.append("g")
+		.attr("transform",function(d,i){
+			var legendH = color.domain().length*(legendSize+legendSpacing);//total height of legends
+			var legendY = i*(legendSize+legendSpacing) - legendH/2;//
+			var legendX = -legendSize;
+			return "translate("+legendX+","+legendY+")";
+		});
+	legend.append("rect")
+		.attr("width",legendSize)
+		.attr("height",legendSize)
+		.attr("fill",color)
+		.attr("stroke",color);
+	legend.append("text")
+		.text(function(d){return d[0];})
+		.attr('x', legendSize + legendSpacing)
+		.attr('y', legendSize - legendSpacing);
+		
+	//add  tooltip to paths
+	var tooltip = d3.select("#diagram").append("div").attr("class","tooltip");
+	tooltip.append("div").attr("class","name");
+	tooltip.append("div").attr("class","count");
+	tooltip.append("div").attr("class","percentage");
+	
+	paths.attr("cursor","pointer").on("mouseover",function(d){
+		var total = d3.sum(dataset,function(dd){return dd[1];});                                                      
+		var percent = Math.round(1000 * d.data[1] / total) / 10; 
+		tooltip.select(".name").html(d.data[0]);                
+		tooltip.select(".count").html(d.data[1]);                
+		tooltip.select(".percentage").html(percent + '%');             
+		tooltip.style("display", "block");   
+	});
+	paths.on("mouseout",function(d){            
+		tooltip.style("display", "none");
+	});
+            	</code></pre>
+            	
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="d3-bar-chart.html" class="navigation navigator-prev" title="d3 bar chart">&#10094;</a>
+          <a href="d3-bar-chart.html" class="navigation navigator-next" title="d3 bar chart">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+        <script src="js/ajax.js"></script>
+    <script>
+	var margin = {top: 20, right: 20, bottom: 50, left: 70};
+    var width = 500 - margin.left - margin.right;
+    var height = 300 - margin.top - margin.bottom;
+	
+	var radius = Math.min(width,height)/2;
+	
+	var color = d3.scaleOrdinal().range(d3.schemeCategory20b);//Constructs a new ordinal scale with an empty domain and the specified range. If a range is not specified, it defaults to the empty array; an ordinal scale always returns undefined until a non-empty range is defined.
+	
+	
+	//add svg with margin !important
+	//this is svg is actually group
+	var svg = d3.select("#diagram").append("svg")
+				.attr("width",width)
+				.attr("height",height)
+				.append("g")  //add group to leave margin for axis
+				.attr("transform","translate("+width/2+","+height/2+")");
+	
+	
+	//the code above should be same
+	
+	var dataset = [["A", 20], ["B", 90], ["C", 50], ["D", 33], ["E", 95],
+                ["F", 12], ["G", 44], ["H", 67], ["I", 21], ["J", 88]];
+	//arc to draw the chart. pie to generate the data for chart from the input
+	var donutWidth = 20;
+	var arc = d3.arc().outerRadius(radius).innerRadius(radius-donutWidth);//to generate the chart
+	var pie = d3.pie()
+				.value(function(d){return d[1];});//sort the value to show from the 12 0'clcok
+	var gs = svg.selectAll(".arc")
+		.data(pie(dataset))
+		.enter().append("g").attr("class","arc");//all arcs 
+	var paths = gs.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data);});
+	//add legend to the donut chart
+
+	var legendSize = 15;
+	var legendSpacing = 2;
+	var legend = svg.selectAll(".legend")
+		.data(color.domain())
+		.enter()
+		.append("g")
+		.attr("transform",function(d,i){
+			var legendH = color.domain().length*(legendSize+legendSpacing);//total height of legends
+			var legendY = i*(legendSize+legendSpacing) - legendH/2;//
+			var legendX = -legendSize;
+			return "translate("+legendX+","+legendY+")";
+		});
+	legend.append("rect")
+		.attr("width",legendSize)
+		.attr("height",legendSize)
+		.attr("fill",color)
+		.attr("stroke",color);
+	legend.append("text")
+		.text(function(d){return d[0];})
+		.attr('x', legendSize + legendSpacing)
+		.attr('y', legendSize - legendSpacing);
+		
+	//add  tooltip to paths
+	var tooltip = d3.select("#diagram").append("div").attr("class","tooltip");
+	tooltip.append("div").attr("class","name");
+	tooltip.append("div").attr("class","count");
+	tooltip.append("div").attr("class","percentage");
+	
+	paths.attr("cursor","pointer").on("mouseover",function(d){
+		var total = d3.sum(dataset,function(dd){return dd[1];});                                                      
+		var percent = Math.round(1000 * d.data[1] / total) / 10; 
+		tooltip.select(".name").html(d.data[0]);                
+		tooltip.select(".count").html(d.data[1]);                
+		tooltip.select(".percentage").html(percent + '%');             
+		tooltip.style("display", "block");   
+	});
+	paths.on("mouseout",function(d){            
+		tooltip.style("display", "none");
+	});
+	</script>
+  </body>
+</html>

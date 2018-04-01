@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script> 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+	<meta charset="utf-8">
+	<meta name="description" content="java AJAX Long Polling">
+	<meta name="keywords" content="java AJAX Long Polling">
+	<meta name="viewport" content="width=device-width">
+    <title>AJAX Long Polling</title>
+    <script src="js/d3.js"></script>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  <style>
+		svg{
+			display:block;
+			margin:auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title" style="opacity:1;">
+              <h1>AJAX Long Polling</h1>
+            </div>
+            <div id="article-content">
+            <p>Client code</p>
+            	<pre class="java-code"><code>
+      function getCommentUpdate() {
+	  $.ajax({
+		type:'POST',
+	    url: '/realtime/comment',
+	    cache:false,
+	    success: function(data) {
+	        if(data==='0'){
+	        	//hide notification icon
+	        	$(".realtime-comment").hide();
+	        	$(".update-remind").hide();
+	        }
+	        else{
+	        	//show notification icon
+	        	$(".realtime-comment").find(".commentnum").html(data);
+	        	$(".realtime-comment").show();
+	        	$(".update-remind").css('display','inline-block');
+	        }
+	    },
+          complete: function() {
+            // Schedule the next request when the current one's complete
+            setTimeout(getCommentUpdate, 60000);
+          },
+          error: function(jqXHR, status, errorThrown) {
+            if (status=='timeout') {
+                console.log( 'request timed out.' );
+                setTimeout( poll, 10 );
+            }
+            else {
+                console.log(status);
+                setTimeout( poll, 60000 );
+            }
+          }
+	  });
+	} 
+            	</code></pre>
+            <p>Server code</p>
+            <p>
+            	The general desigh is that each servlet handler will make a blocking call to wait for the next push event, and most servlet engines uses a limited thread pool to handle incoming requests, we will face Thread Starvation very soon, with no available threads to handle new incoming requests.<br><br>
+
+				Fortunately Asynchronous Servlets has been introduced since servlet spec 3.0. Instead of waiting for the processing to be finished, the servlet handler simply start another new worker thread, pass along an instance of AsyncContext to the worker thread, and be done. The servlet handler thread is returned to the pool to handle other incoming requests, and with the AsyncContext instance, the new worker thread has everything it needs to complete the request. Check this <a href="https://nzhong.github.io/blog/2016/07/simple-long-polling">blog</a> for more details
+            </p>
+            </div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+     <!--     <a href="add-sorter-to-common-navigator.html" class="navigation navigator-pre" title="add sorter to common navigator">&#10094;</a>-->
+          <!--<a href="d3-bar-chart-scale.html" class="navigation navigator-next" title="d3 scale bar chart">&#10095;</a>  -->
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+    <script src="js/ajax.js"></script>
+    
+  </body>
+</html>

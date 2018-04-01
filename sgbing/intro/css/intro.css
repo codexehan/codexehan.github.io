@@ -1,0 +1,125 @@
+@charset "utf-8";
+/* CSS Document */
+.tooltip-inner {
+    max-width:none;
+	min-width:300px;
+}
+
+/*****hotspot*****/
+.outer{
+    background-repeat: repeat-x;    
+ /*   height:385px;*/
+    width: 800px;
+	margin:0 auto;
+}
+
+.outer .inner{    
+    width: 800px; /*328 co je 1/3 - 20margin left*/
+/*    height: 385px;*/
+    display:inline-block;
+    position:relative;
+}
+
+.outer .inner .itemimg {
+    position:absolute;
+}
+.actividad-number-circle {
+  background-color: #FFF;
+  height: 25px;
+  border: 2px #eaa54e solid;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 25px;
+  position: absolute;
+  margin-top: 10px;
+  margin-right: 5px;
+  line-height: 25px;
+  color: #eaa54e;
+  font-size: 15.43px;
+  font-weight: 700;
+  text-align: center;
+  font-family: "Lato", sans-serif;
+  cursor:pointer;
+}
+
+.actividad-number-circle.pulsate {
+  -webkit-animation: pulsate 2000ms ease-out;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation: pulsate 2000ms ease-out;
+  -moz-animation-iteration-count: infinite;
+}
+
+.actividad-number-circle.pulsateExt {
+  -webkit-animation: pulsateExt 2000ms ease-out;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation: pulsateExt 2000ms ease-out;
+  -moz-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes pulsate {
+  0% {
+    -webkit-transform: scale(1.0, 1.0);
+    opacity: 0.0;
+  }
+  25% {
+    opacity: 1.0;
+  }
+  75% {
+    -webkit-transform: scale(2.5, 2.5);
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 0.0;
+  }
+}
+
+@-moz-keyframes pulsate {
+  0% {
+    -moz-transform: scale(1.0, 1.0);
+    opacity: 0.0;
+  }
+  25% {
+    opacity: 1.0;
+  }
+  75% {
+    -moz-transform: scale(2.5, 2.5);
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 0.0;
+  }
+}
+
+@-webkit-keyframes pulsateExt {
+  0% {
+    opacity: 0.0;
+  }
+  25% {
+    -webkit-transform: scale(1.0, 1.0);
+    opacity: 0.0;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    -webkit-transform: scale(2.5, 2.5);
+    opacity: 0.0;
+  }
+}
+
+@-moz-keyframes pulsateExt {
+  0% {
+    opacity: 0.0;
+  }
+  25% {
+    -moz-transform: scale(1.0, 1.0);
+    opacity: 0.0;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    -moz-transform: scale(2.5, 2.5);
+    opacity: 0.0;
+  }
+}

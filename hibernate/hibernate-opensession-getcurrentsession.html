@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="Hibernate Load Get">
+	<meta name="keywords" content="Hibernate Load Get">
+	<meta name="viewport" content="width=device-width">
+    <title>openSession vs getCurrentSession</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Hibernate Introduction</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="hibernate-tutorial.html">Hibernate Tutorial</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Hibernate JBoss Tool</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="install-hibernate-jboss-tool.html">Install Hibernate JBoss tool</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-configuration-file.html">Generate hibernate.cfg.xml file</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-mapping-file.html">Generate hibernate mapping file</a>
+              </li>
+              
+            </ul>
+            
+          </li>
+          <li class="chapter">
+            <a><strong>Hibernate Exceptions</strong></a>
+            <ul class="section-list">
+            	<li class="section ">
+					<a href="hibernate-exceptions.html">Hibernate Exceptions</a>
+				</li>
+            <li class="section ">
+					<a href="communication-link-failure.html">Communication Link Failure</a>
+				</li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate APIs</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-get-load.html">Get vs Load</a>
+				</li>
+           		<li class="section active">
+					<a href="hibernate-opensession-getcurrentsession.html">openSession vs getCurrentSession</a>
+				</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>openSession vs getCurrentSession</h1>
+            </div>
+            <div id="article-content">
+            <p><strong>First, hibernate session is not thread safe.</strong></p>
+			<p>1.openSession will create a new session. getCurrentSession will create a new session bound to the current thread.
+			</p>
+			<p>2.session created by getCurrentSession will be closed automatically when the transaction rollback or commit. session created by openSession need to be closed manually.</p>
+			<p>3. If a session is already created in the context, getCurrentSession will not create a new session and return the existing session.</p>
+			<p>
+			<strong>Enable getCurrentSession</strong><br>
+			add this line in the hibernate.cfg.xml file
+			<code>< property name="hibernate.current_session_context_class">thread</property></code><br>
+			</p>
+			<p>
+				<strong>For the web aplication, we should remember One session per request. The basic idea is to create a filter for hibernate and calling getCurrentSession to create or get a session. Then use getCurrentSession in the service layer to comunicate with database.</strong>
+			</p>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="hibernate-get-load.html" class="navigation navigator-pre" title="get vs load">&#10094;</a>
+          <!--<a href="generate-hibernate-mapping-file.html" class="navigation navigator-next" title="generate hibernate mapping file">&#10095;</a> --> 
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

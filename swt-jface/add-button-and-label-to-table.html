@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110963818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110963818-1');
+</script>
+
+	<meta charset="utf-8">
+	<meta name="description" content="Add button and label to table">
+	<meta name="keywords" content="SWT,JFace,button,label,table">
+	<meta name="viewport" content="width=device-width">
+    <title>Add button and label to table</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Table</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="create-a-table.html">Create a table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-menu-to-table.html">Add menu to table</a>
+              </li>
+			  <li class="section ">
+                <a href="add-text-and-combo-box-to-table.html">Add text and combo box to table</a>
+              </li>
+			  <li class="section active">
+                <a href="add-button-and-label-to-table.html">Add button and label to table</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Dialog</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="swt-color-dialog.html">SWT color dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-directory-dialog.html">SWT directory dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-file-dialog.html">SWT file dialog</a>
+              </li>
+			  <li class="section ">
+                <a href="swt-message-box.html">SWT message box</a>
+              </li>
+			  <li class="section ">
+                <a href="jface-message-dialog.html">JFace message dialog</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Add button and label to table</h1>
+            </div>
+            <div id="article-content">
+			<img src="images/add-button-label-to-table.png" alt="add button and label to table">
+			 <p>The label can use to show the different color. The button is located on the right side while the left area can show other contents.</p>
+			 <pre class="java-code"><code>TableViewer tableViewer = new TableViewer(container,SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+Table table = tableViewer.getTable();
+table.setHeaderVisible(true);
+table.setLinesVisible(true);
+TableViewerColumn viewerCol1 = new TableViewerColumn(tableViewer,SWT.NONE);
+TableColumn col1 = viewerCol1.getColumn();
+col1.setText("Column 1");
+col1.setWidth(100);
+viewerCol1.setLabelProvider(new ColumnLabelProvider(){
+	@Override
+	public void update(ViewerCell cell) {
+		TableItem item = (TableItem) cell.getItem();
+		Label label = new Label((Composite)cell.getControl(),SWT.NONE);
+		label.setBackground(new Color(null, 255,100,120));		       
+			TableEditor editor = new TableEditor(item.getParent());
+			editor.grabHorizontal  = true;
+			editor.grabVertical = true;
+		editor.setEditor(label, item, cell.getColumnIndex());
+		editor.layout();    
+	}
+	 @Override
+		 public String getText(Object element){
+				if(element instanceof TableViewerInput){
+					   return ((TableViewerInput)element).getColumn1();
+				 }
+				 return super.getText(element);
+			 }
+});
+
+TableViewerColumn viewerCol2 = new TableViewerColumn(tableViewer,SWT.NONE);
+TableColumn col2 = viewerCol2.getColumn();
+col2.setText("Column 2");
+col2.setWidth(100);
+viewerCol2.setLabelProvider(new ColumnLabelProvider(){
+			
+	@Override
+	public void update(ViewerCell cell) {
+		TableItem item = (TableItem) cell.getItem();
+		Button btn = new Button((Composite)cell.getControl(),SWT.NONE);
+		btn.setText("...");
+			   
+		TableEditor editor = new TableEditor(item.getParent());
+	   //   editor.grabHorizontal  = true;
+		editor.horizontalAlignment = SWT.RIGHT;
+		editor.minimumWidth = btn.getSize().x + 20;
+		editor.setEditor(btn, item, cell.getColumnIndex());
+		editor.layout();    
+	}
+	@Override
+		public String getText(Object element){
+				if(element instanceof TableViewerInput){
+					   return ((TableViewerInput)element).getColumn2();
+				 }
+				 return super.getText(element);
+		}
+});
+tableViewer.setContentProvider(new TableViewerContentProvider());
+tableViewer.add(new TableViewerInput("col1_1","combo1"));
+			 </code></pre>
+				<div id="tip">
+					<p>Tips:</p>
+					<p>The implementation can be extended to add listener to the button and show the color dialog to change the color of the label</p>
+				</div>
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="add-text-and-combo-box-to-table.html" class="navigation navigator-pre" title="add text and combo box to table">&#10094;</a>
+          <a href="swt-color-dialog.html" class="navigation navigator-next" title="SWT color dialog">&#10095;</a>  
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>

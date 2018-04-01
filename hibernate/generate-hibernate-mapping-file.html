@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="Generate hibernate mapping file">
+	<meta name="keywords" content="Jboss tool, hiberneate xml mapping file">
+	<meta name="viewport" content="width=device-width">
+    <title>Generate hibernate mapping file</title>
+    <link href="../styles/codexe-css.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+  </head>
+  <body>
+    <div id="book">
+      <div id="summary-control">
+        <div id="collapse" onclick="collapseNav()">&#10094;</div>
+        <div id="expand" onclick="expandNav()">&#10095;</div>
+      </div>
+      <!--chapter list-->
+      <div id="book-summary">
+	  <a id="back-home" href="/"><h1>CODEXE</h1></a>
+        <ul class="chapter-list">
+          <li class="chapter">
+            <a><strong>Hibernate Introduction</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="hibernate-tutorial.html">Hibernate Tutorial</a>
+              </li>
+            </ul>
+          </li>
+		  
+		  <li class="chapter">
+            <a><strong>Hibernate JBoss Tool</strong></a>
+            <ul class="section-list">
+              <li class="section ">
+                <a href="install-hibernate-jboss-tool.html">Install Hibernate JBoss tool</a>
+              </li>
+			  <li class="section ">
+                <a href="generate-hibernate-configuration-file.html">Generate hibernate.cfg.xml file</a>
+              </li>
+			  <li class="section active">
+                <a href="generate-hibernate-mapping-file.html">Generate hibernate mapping file</a>
+              </li>
+            </ul>
+          </li>
+            <li class="chapter">
+            <a><strong>Hibernate Exceptions</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-exceptions.html">Hibernate Exceptions</a>
+				</li>
+           	 <li class="section ">
+					<a href="communication-link-failure.html">Communication Link Failure</a>
+				</li>
+            </ul>
+          </li>
+           <li class="chapter">
+            <a><strong>Hibernate APIs</strong></a>
+            <ul class="section-list">
+            	<li class="section">
+					<a href="hibernate-get-load.html">Get vs Load</a>
+				</li>            	
+				<li class="section ">
+					<a href="hibernate-opensession-getcurrentsession.html">openSession vs getCurrentSession</a>
+				</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <!--book title + book content-->
+      <div id="book-container">
+        <div id="book-body">
+          <div id="book-content">
+            <div id="book-title">
+              <h1>Generate Hibernate Mapping File</h1>
+            </div>
+            <div id="article-content">
+			 <p>
+			 	1. Click "Hibernate Code Generation Configurations" in the hibernate perspective.
+			 </p>
+			 <img src="images/hibernate-code-generation-configuration.png" alt="hibernate code generation configuration">
+			 <p>
+			 	2.In the Main tab page, select your console configuration which is hibernate(1) here. Set the ouput directory and check the "Reverse engineer from JDBC Connection"</p>
+			 </p>
+			 <p><strong>
+			 	OutputDirectory: the directory of package i.e. \crawler\test<br>
+				Package: name of package i.e. com.bing.model
+			 </strong></p>
+			 <img src="images/create-run-hibernate-configuration.png" alt="create run hibernate configuration">
+			 <p>
+			 	3.In the Exporters tab page, select to generate domain code, mapping files. If you want to use annotations, please check the <strong>"Generate EJB3 annotations"</strong>.
+			 </p>
+			 <img src="images/hibernate-configurtion2.png" alt="hibernate annotations configuration">
+			 <p>4. XML mapping files</p>
+			  <img src="images/XML-mapping-files.png" alt="XML mapping files">
+			</div>
+          </div>
+		  <div id="top-arrow" title="TOP">&#10094;</div>
+          <a href="generate-hibernate-configuration-file.html" class="navigation navigator-pre" title="generate hibernate configuration file">&#10094;</a>
+          <a href="hibernate-exceptions.html" class="navigation navigator-next" title="hibernate exceptions">&#10095;</a>
+         
+        </div>
+      </div>
+    </div>
+    <!--javascript section-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="../js/codexe-js.js"></script>
+  </body>
+</html>
