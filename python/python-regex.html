@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	
+	
+	<meta name="description" content="re.matchre.match match the pattern from the start of the string
+1re.match(pattern, string, flags=0)
+re.searchre.search match the pattern of the whole string
+1re.search(pattern, string, flags=0)
+Use group(num=0) to get the result and groups() will ret" >
+	<meta name="keywords" content="" >
+
+    <title>
+		
+			Python Regex
+		
+	</title>
+	
+	<meta name="viewport" content="width=device-width">
+	
+		<link rel="stylesheet" href="/styles/codexe-css.css">
+	
+	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+  </head>
+  <body>
+	<div id="book">
+  <div id="summary-control">
+	<div id="collapse" onclick="collapseNav()">&#10094;</div>
+	<div id="expand" onclick="expandNav()">&#10095;</div>
+  </div>
+  
+  <div id="book-summary">
+	<!-- get the chapter set and post set -->
+	<!--chapter set--> 
+    
+	<a id="back-home" href="/"><h1>Python</h1></a>
+	<!-- get all chapters in this category -->
+	
+	
+	
+	
+		
+			
+		
+	
+		
+			
+		
+	
+		
+			
+		
+	
+		
+			
+				 
+				 
+				 <!-- left and right navigation-->
+				 
+			
+		
+	
+	
+	<ul class="chapter-list">
+		<li class="chapter">
+			
+				<a>
+					<strong>Regex</strong>
+				</a>
+				<!-- add section(post) -->
+				<ul class="section-list">
+					
+						
+							<li class="section  active "><a href="/python/python-regex.html">Python Regex</a></li>
+							
+					
+				</ul>
+			
+		</li> 
+		
+	</ul>
+  </div>
+  
+  <!--book title + book content-->
+  <div id="book-container">
+	<div id="book-body">
+	  <div id="book-content">
+		<div id="book-title">
+		  <h1>Python Regex</h1>
+		</div>
+		<div id="article-content">
+			<p><h2 id="re-match"><a href="#re-match" class="headerlink" title="re.match"></a>re.match</h2><p><code>re.match</code> match the pattern from the <strong>start of the string</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.match(pattern, string, flags=0)</span><br></pre></td></tr></table></figure>
+<h2 id="re-search"><a href="#re-search" class="headerlink" title="re.search"></a>re.search</h2><p><code>re.search</code> match the pattern of the <strong>whole string</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.search(pattern, string, flags=0)</span><br></pre></td></tr></table></figure>
+<p>Use <code>group(num=0)</code> to get the result and <code>groups()</code> will return a tuple</p>
+<h2 id="search-and-replace"><a href="#search-and-replace" class="headerlink" title="search and replace"></a>search and replace</h2><p>Replace the substring matched by <code>pattern</code> to the rep1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.sub(pattern, rep1, string, count=0)</span><br></pre></td></tr></table></figure>
+<p>parameters:</p>
+<ul>
+<li>rep1 is the new string or a function to replace the original substring</li>
+<li>count is the max number of doing replace</li>
+</ul>
+<h2 id="compile"><a href="#compile" class="headerlink" title="compile"></a>compile</h2><p><code>compile</code> can generate a Regex object which provides <code>match()</code> and ‘search()’ funcitons.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.compile(pattern[, flags])</span><br></pre></td></tr></table></figure>
+<p>For the match object:</p>
+<ul>
+<li>group() can get different matched substring</li>
+<li>start([group]) get the index of the first character in the substring ([group] is the index of group whose default value is 0)</li>
+<li>end([group]) get the index of the final character in the substring</li>
+<li>span([group]) return (start([group], end([group])))</li>
+</ul>
+<h2 id="findall"><a href="#findall" class="headerlink" title="findall"></a>findall</h2><p>Find <strong>all</strong> the substring matched and return a <strong>list</strong>.</p>
+<p><code>match</code> and <code>search</code> only match once.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">findall(string[,pos[,endpos]])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>pos optional parameter, the start index of the string and default value is 0</li>
+<li>endpos optional parameter, the end index of the string and default calue is the length of string</li>
+</ul>
+<h2 id="re-finditer"><a href="#re-finditer" class="headerlink" title="re.finditer"></a>re.finditer</h2><p>Find <strong>all</strong> the substring matched and return a <strong>iterator</strong>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.finditer(pattern, string, flags=0)</span><br></pre></td></tr></table></figure>
+<h2 id="re-split"><a href="#re-split" class="headerlink" title="re.split"></a>re.split</h2><p>Split the string by the matched substring</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.split(pattern, string[, maxsplit=0, floags=0])</span><br></pre></td></tr></table></figure>
+</p>
+		</div>
+	  </div>
+	  <div id="top-arrow" title="TOP">&#10094;</div>
+	  
+	  
+	</div>
+  </div>
+</div>
+  <!--javascript section-->
+  <!--  <script src="/js/codexe-js.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/js/codexe-js.js"></script>
+  </body>
+</html>
